@@ -21,7 +21,7 @@ VALUES ('Action'),
 INSERT INTO STAR 
 		(NAME, 
 		AGE, 
-		WEIGTH, 
+		WEIGHT,
 		HISTORY)
 		
 VALUES 
@@ -32,11 +32,11 @@ VALUES
 		
 		('Mickey Mouse',
 		14,
-        28.9,
+        30,
         'Mickey the little mouse'),
         
         ('Aladdin',
-		23,
+		20,
         70.0,
         'Aladdin the middle east king'),
         
@@ -47,7 +47,7 @@ VALUES
  
         ('Donald Duck',
 		18,
-        36,
+        30,
         'Donald the duck - quack');
 
 
