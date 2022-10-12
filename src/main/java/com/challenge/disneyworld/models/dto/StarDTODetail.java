@@ -1,22 +1,18 @@
 package com.challenge.disneyworld.models.dto;
 
 
+import java.util.List;
+
 public class StarDTODetail extends StarDTOBase{
 
-    private long id;
     private short age;
     private float weight;
     private String history;
+    private List<ContentDTOBase> contents;
 
     public StarDTODetail() {
     }
 
-    public long getId() {
-        return id;
-    }
-    public void setId(long id) {
-        this.id = id;
-    }
     public short getAge() {
         return age;
     }
@@ -35,15 +31,19 @@ public class StarDTODetail extends StarDTOBase{
     public void setHistory(String history) {
         this.history = history;
     }
+    public List<ContentDTOBase> getContents() {
+        return contents;
+    }
+    public void setContents(List<ContentDTOBase> contents) {
+        this.contents = contents;
+    }
 
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("StarDTODetail{");
-        sb.append("id=").append(id);
-        sb.append(", name= ").append(this.getName());
+        sb.append(super.toString());
         sb.append(", age=").append(age);
         sb.append(", weight=").append(weight);
-        sb.append(", image=").append(this.getImage());
         sb.append(", history='").append(history).append('\'');
         sb.append('}');
         return sb.toString();

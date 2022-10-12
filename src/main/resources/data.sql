@@ -68,6 +68,16 @@ VALUES
 	 	('Fantasia',
 		DATE '1940-11-13',
         '5',
+        6),
+
+		('Three little birds',
+		DATE '2022-08-11',
+        '5',
+        11),
+
+	 	('Queen',
+		DATE '1955-11-13',
+        '2',
         6);
 		
 --STAR_CONTENT

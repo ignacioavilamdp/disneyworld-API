@@ -1,21 +1,16 @@
 package com.challenge.disneyworld.dao;
 
+import com.challenge.disneyworld.models.domain.Content;
 import com.challenge.disneyworld.models.domain.Star;
-import com.challenge.disneyworld.models.dto.StarDTOBase;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-
 public interface StarDAO {
+    Star getById(long id);
+    Star getByName(String name);
 
-
-    public Star getById(long id);
-    public Star getByName(String name);
-
-    public List<Star> getAll();
-    public List<Star> search(String name, Short age, String movie);
+    List<Star> getAll();
+    List<Star> search(String name, Short age, Float weight, Long movie);
 
     /**
      * Saves the given entity. Returns the entity saved as the save operations
@@ -24,11 +19,14 @@ public interface StarDAO {
      * @param star - the star to save
      * @return the star added
      */
-    public Star save(Star star);
-    public Star update(Star star);
+    Star save(Star star);
+    Star update(Star star);
 
-    public boolean isById(long id);
-    public boolean isByName(String name);
+    boolean isById(long id);
+    boolean isByName(String name);
 
-    public void deleteById(long id);
+    boolean deleteById(long id);
+
+    List<Content> getContentsById(Long id);
+
 }

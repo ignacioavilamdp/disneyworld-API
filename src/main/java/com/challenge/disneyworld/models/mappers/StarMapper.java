@@ -4,12 +4,15 @@ import com.challenge.disneyworld.models.domain.Star;
 import com.challenge.disneyworld.models.dto.StarDTOBase;
 import com.challenge.disneyworld.models.dto.StarDTODetail;
 
+import java.util.stream.Collectors;
+
 public class StarMapper {
 
     public static StarDTOBase domainToDTOBase(Star star){
         StarDTOBase dto = null;
         if (star != null) {
             dto = new StarDTOBase();
+            dto.setId(star.getId());
             dto.setName(star.getName());
             dto.setImage(star.getImage());
         }
@@ -26,6 +29,12 @@ public class StarMapper {
             dto.setWeight(star.getWeight());
             dto.setImage(star.getImage());
             dto.setHistory(star.getHistory());
+            dto.setContents(
+                    star.getContents().
+                            stream().
+                            map(content -> ContentMapper.domainToDTOBase(content)).
+                            collect(Collectors.toList())
+            );
         }
         return dto;
     }
@@ -34,7 +43,7 @@ public class StarMapper {
         Star star = null;
         if (dto != null){
             star = new Star();
-            star.setId(dto.getId());
+            // star.setId(dto.getId());
             star.setName(dto.getName());
             star.setAge(dto.getAge());
             star.setWeight(dto.getWeight());

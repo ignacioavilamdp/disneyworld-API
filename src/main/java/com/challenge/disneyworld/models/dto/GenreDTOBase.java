@@ -1,20 +1,18 @@
 package com.challenge.disneyworld.models.dto;
 
-import java.io.Serializable;
+public class GenreDTOBase {
 
-public class StarDTOBase implements Serializable {
-
-    private long id;
+    private int id;
     private String name;
     private String image;
 
-    public StarDTOBase() {
+    public GenreDTOBase() {
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
     public String getName() {
@@ -32,8 +30,8 @@ public class StarDTOBase implements Serializable {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("StarDTOBase{");
-        sb.append("id=").append(id);
+        final StringBuilder sb = new StringBuilder("GenreDTOBase{");
+        sb.append("id='").append(id);
         sb.append(", name='").append(name).append('\'');
         sb.append(", image='").append(image).append('\'');
         sb.append('}');
