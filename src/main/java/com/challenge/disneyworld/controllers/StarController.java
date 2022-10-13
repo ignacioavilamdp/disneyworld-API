@@ -6,6 +6,7 @@ import com.challenge.disneyworld.models.dto.StarDTOBase;
 import com.challenge.disneyworld.models.dto.StarDTODetail;
 import com.challenge.disneyworld.service.StarService;
 import com.sun.istack.NotNull;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.util.List;
 
+@Api(tags = "character", description = "everything about disney characters")
 @RestController
 @RequestMapping("/characters")
 public class StarController {
@@ -47,7 +49,7 @@ public class StarController {
         return ResponseEntity.ok().body(service.getAll());
     }
 
-    @ApiOperation("Find a character by ID")
+    @ApiOperation("Find a character")
     @GetMapping("/{characterId}")
     public ResponseEntity<StarDTODetail> getById(@PathVariable("characterId") Long id){
         return ResponseEntity.ok().body(service.getById(id));
@@ -59,7 +61,7 @@ public class StarController {
         return ResponseEntity.ok().body(service.deleteById(id));
     }
 
-    @ApiOperation("Update a character")
+    @ApiOperation("Update a character (including its movies)")
     @PutMapping("/{characterId}")
     public ResponseEntity<StarDTODetail> updateById(@PathVariable("characterId") Long id,
                                                 @RequestBody StarDTODetail dto){
@@ -74,7 +76,7 @@ public class StarController {
         return ResponseEntity.ok().body(service.getContentsById(id));
     }
 
-    @ApiOperation("Add movie to a character")
+    @ApiOperation("Add a movie to a character")
     @PostMapping("/{characterId}/movies/{movieId}")
     public ResponseEntity<String> relateContent(@PathVariable("characterId") Long starId,
                                          @PathVariable("movieId") Long contentId){

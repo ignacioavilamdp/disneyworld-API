@@ -6,6 +6,7 @@ import com.challenge.disneyworld.models.dto.StarDTOBase;
 import com.challenge.disneyworld.models.dto.StarDTODetail;
 import com.challenge.disneyworld.service.ContentService;
 import com.challenge.disneyworld.service.StarService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.util.List;
 
+@Api(tags = "movie", description = "everything about disney movies")
 @RestController
 @RequestMapping("/movies")
 public class ContentController {
@@ -30,7 +32,7 @@ public class ContentController {
         return ResponseEntity.ok(service.search(title, genreId, true));
     }
 
-
+    @ApiOperation("Add a new movie")
     @PostMapping
     public ResponseEntity<ContentDTODetail> save(@RequestBody ContentDTODetail dto) {
         ContentDTODetail savedDTO = service.save(dto);
@@ -38,45 +40,51 @@ public class ContentController {
         return ResponseEntity.created(uri).body(savedDTO);
     }
 
-
-    @GetMapping("/all")
+    @ApiOperation("Obtain a detailed list of all movies")
+    @GetMapping("/detail")
     public ResponseEntity<List<ContentDTODetail>> getAll() {
         return ResponseEntity.ok().body(service.getAll());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ContentDTODetail> getById(@PathVariable("id") Long id){
+    @ApiOperation("Find a movie")
+    @GetMapping("/{movieId}")
+    public ResponseEntity<ContentDTODetail> getById(@PathVariable("movieId") Long id){
         return ResponseEntity.ok().body(service.getById(id));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteById(@PathVariable("id") Long id){
+    @ApiOperation("Delete a movie")
+    @DeleteMapping("/{movieId}")
+    public ResponseEntity<String> deleteById(@PathVariable("movieId") Long id){
         return ResponseEntity.ok().body(service.deleteById(id));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<ContentDTODetail> updateById(@PathVariable("id") Long id,
+    @ApiOperation("Update a movie (including its characters)")
+    @PutMapping("/{movieId}")
+    public ResponseEntity<ContentDTODetail> updateById(@PathVariable("movieId") Long id,
                                                    @RequestBody ContentDTODetail dto){
         ContentDTODetail updatedDTO = service.updateById(id, dto);
         URI uri = URI.create("movies/"+ updatedDTO.getId());
         return ResponseEntity.accepted().location(uri).body(updatedDTO);
     }
 
-    @GetMapping("/{id}/characters")
-    public ResponseEntity<List<StarDTOBase>> getStars(@PathVariable("id") Long id){
+    @ApiOperation("Find characters of a movie")
+    @GetMapping("/{movieId}/characters")
+    public ResponseEntity<List<StarDTOBase>> getStars(@PathVariable("movieId") Long id){
         return ResponseEntity.ok().body(service.getStarsById(id));
     }
 
-    @PostMapping("/{id}/characters/{characterId}")
+    @ApiOperation("Add a character to a movie")
+    @PostMapping("/{movieId}/characters/{characterId}")
     public ResponseEntity<String> relateStar(@PathVariable("characterId") Long starId,
-                                                @PathVariable("id") Long contentId){
+                                                @PathVariable("movieId") Long contentId){
         URI uri = URI.create("movies/" + contentId + "characters/" + starId);
         return ResponseEntity.created(uri).body(service.relateStar(starId, contentId));
     }
 
-    @DeleteMapping("/{id}/characters/{characterId}")
+    @ApiOperation("Delete a character from a movie")
+    @DeleteMapping("/{movieId}/characters/{characterId}")
     public ResponseEntity<String> unRelateStar(@PathVariable("characterId") Long starId,
-                                                  @PathVariable("id") Long contentId){
+                                                  @PathVariable("movieId") Long contentId){
         return ResponseEntity.ok().body(service.unRelateStar(starId, contentId));
     }
 
