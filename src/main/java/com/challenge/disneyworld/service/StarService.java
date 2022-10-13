@@ -2,6 +2,7 @@ package com.challenge.disneyworld.service;
 
 import com.challenge.disneyworld.dao.ContentDAO;
 import com.challenge.disneyworld.dao.StarDAO;
+import com.challenge.disneyworld.exceptions.*;
 import com.challenge.disneyworld.models.domain.Content;
 import com.challenge.disneyworld.models.domain.Star;
 import com.challenge.disneyworld.models.dto.ContentDTOBase;
@@ -42,129 +43,122 @@ public class StarService {
 
     @Transactional(readOnly = true)
     public StarDTODetail getById(Long id){
-        return StarMapper.domainToDTODetail(starDAO.getById(id));
+        Star star = starDAO.getById(id);
+        if (star == null)
+            throw new NonExistentEntityException("There is no character with ID: " + id);
+
+        return StarMapper.domainToDTODetail(star);
     }
 
     @Transactional
-    public StarDTODetail save(StarDTODetail dto) {
-        if (dto.getName() == null){
-            String message = "Not accepted without name";
-            System.out.println(message);
-            return null;
-        }
+    public String deleteById(Long id) {
+        Star star = starDAO.getById(id);
+        if ( star == null )
+            throw new NonExistentEntityException("There is no character with ID: " + id);
 
-        if (starDAO.isByName(dto.getName())){
-            String message = "There is already entity in the db with that name";
-            System.out.println(message);
-            return null;
-        }
-
-        return StarMapper.domainToDTODetail(
-                                    starDAO.save(
-                                        StarMapper.DTOToDomain(dto)));
+        starDAO.delete(star);
+        return "Character with ID: " + id + " - successfully removed";
     }
 
     @Transactional
-    public StarDTODetail update(StarDTODetail dto){
-        if (dto.getName() == null){
-            String message = "Not accepted without name";
-            System.out.println(message);
-            return null;
-        }
-        
+    public StarDTODetail updateById(Long id, StarDTODetail dto){
+        if (id != dto.getId())
+            throw new TryingToModifyIdException("The id in the payload does not match the id in the URI. " +
+                    "Are you trying to modify the id? This is not allowed.");
+
+        if (dto.getName() == null)
+            throw new NoNamePassedException("No name passed. Name is mandatory.");
+
         Star starById = starDAO.getById(dto.getId());
+        if (starById == null)
+            throw new NonExistentEntityException("There is no character with ID: " + id);
+
         Star starByName = starDAO.getByName(dto.getName());
-        if (starById == null){
-            String message = "No entity in the db with that id";
-            System.out.println(message);
-            return null;
-        }
-        if (starByName != null && starByName.getId() != starById.getId()){
-            String message = "There is already an entity with the same name in the db (different from the entity that must be updated)";
-            System.out.println(message);
-            return null;
-        }
+        if (starByName != null && starByName.getId() != starById.getId())
+            throw new DuplicateNameException("There is already a character with the same name (" + dto.getName() + "). No duplicates allowed.");
 
-        // Instead of copying, I set each value - To review TODO
-        //starById.copy(StarMapper.DTOToDomain(dto));
-        starById.setName(dto.getName());
-        starById.setImage(dto.getImage());
-        starById.setAge(dto.getAge());
-        starById.setHistory(dto.getHistory());
-        starById.setWeight(dto.getWeight());
-        //starById.setContents(dto.getContents());
-
+        modifyEntityFromDTO(starById, dto);
         return StarMapper.domainToDTODetail(starById);
     }
 
     @Transactional
-    public boolean deleteById(Long id) {
-        if ( !starDAO.isById(id) ){
-            String message = "Not entity with that id in the db";
-            System.out.println(message);
-            return false;
-        }
+    public StarDTODetail save(StarDTODetail dto) {
+        if (dto.getName() == null)
+            throw new NoNamePassedException("No name passed. Name is mandatory.");
 
-        return ( starDAO.deleteById(id) );
+        if (starDAO.isByName(dto.getName()))
+            throw new DuplicateNameException("There is already a character with the same name (" + dto.getName() + "). No duplicates allowed");
+
+        // TODO - SOME CHECK OVER ID
+        Star star = new Star();
+        modifyEntityFromDTO(star, dto);
+        return StarMapper.domainToDTODetail(starDAO.save(star));
     }
 
     @Transactional
-    public boolean relateContent(Long starId, Long contentId) {
+    public String relateContent(Long starId, Long contentId) {
         Star star = starDAO.getById(starId);
         Content content = contentDao.getById(contentId);
 
-        if (star == null){
-            System.out.println("No star with that id");
-            return false;
-        }
+        if (star == null)
+            throw new NonExistentEntityException("There is no character with that ID: " + starId);
 
-        if (content == null){
-            System.out.println("No content with that id");
-            return false;
-        }
+        if (content == null)
+            throw new NonExistentEntityException("There is no content with that ID: " + contentId);
 
-        if (star.getContents().contains(content)){
-            System.out.println("The relation already exists");
-            return false;
-        }
+        if (star.getContents().contains(content))
+            throw new DuplicateRelationException("The character " + starId + " is already related to the movie " + contentId + ".");
 
-        return star.getContents().add(content);
+        star.getContents().add(content);
+        return "Relationship established between character " + starId + " and movie " + contentId;
     }
 
     @Transactional
-    public boolean unRelateContent(Long starId, Long contentId) {
+    public String unRelateContent(Long starId, Long contentId) {
         Star star = starDAO.getById(starId);
         Content content = contentDao.getById(contentId);
 
-        if (star == null){
-            System.out.println("No star with that id");
-            return false;
-        }
+        if (star == null)
+            throw new NonExistentEntityException("There is no character with that ID: " + starId);
 
-        if (content == null){
-            System.out.println("No content with that id");
-            return false;
-        }
+        if (content == null)
+            throw new NonExistentEntityException("There is no content with that ID: " + contentId);
 
-        if (!star.getContents().contains(content)){
-            System.out.println("The relation does not exist");
-            return false;
-        }
+        if (!star.getContents().contains(content))
+            throw new NonExistentRelationException("That character " + starId + " is not related to the movie" + contentId + ".");
 
-        return star.getContents().remove(content);
+        star.getContents().remove(content);
+        return "Relationship removed between character " + starId + " and movie " + contentId;
     }
 
     @Transactional(readOnly = true)
     public List<ContentDTOBase> getContentsById(Long id) {
-        if (!starDAO.isById(id)){
-            String message = "Not entity with that id in the db";
-            System.out.println(message);
-            return null;
-        }
+        if (!starDAO.isById(id))
+            throw new NonExistentEntityException("There is no character with that ID.");
+
         return starDAO.getContentsById(id).
                 stream().
                 map(content -> ContentMapper.domainToDTOBase(content)).
                 collect(Collectors.toList());
     }
 
+    private void modifyEntityFromDTO(Star star, StarDTODetail dto){
+        star.setName(dto.getName());
+        star.setImage(dto.getImage());
+        star.setAge(dto.getAge());
+        star.setHistory(dto.getHistory());
+        star.setWeight(dto.getWeight());
+
+        /*
+         * We need to remove all the relations between the content and its stars.
+         * For each name in the dto we need to check if the content entity exists.
+         */
+        star.getContents().clear();
+        for (String contentTitle : dto.getContents()){
+            Content content = contentDao.getByTitle(contentTitle);
+            if (content == null)
+                throw new NonExistentEntityException("There is no movie with title: " + contentTitle + ". Please, add the movie first.");
+            star.getContents().add(content);
+        }
+    }
 }

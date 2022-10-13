@@ -8,7 +8,7 @@ public class StarDTODetail extends StarDTOBase{
     private short age;
     private float weight;
     private String history;
-    private List<ContentDTOBase> contents;
+    private List<String> contents;
 
     public StarDTODetail() {
     }
@@ -31,10 +31,10 @@ public class StarDTODetail extends StarDTOBase{
     public void setHistory(String history) {
         this.history = history;
     }
-    public List<ContentDTOBase> getContents() {
+    public List<String> getContents() {
         return contents;
     }
-    public void setContents(List<ContentDTOBase> contents) {
+    public void setContents(List<String> contents) {
         this.contents = contents;
     }
 
@@ -42,9 +42,10 @@ public class StarDTODetail extends StarDTOBase{
     public String toString() {
         final StringBuilder sb = new StringBuilder("StarDTODetail{");
         sb.append(super.toString());
-        sb.append(", age=").append(age);
-        sb.append(", weight=").append(weight);
+        sb.append(", age=").append(age).append('\'');
+        sb.append(", weight=").append(weight).append('\'');
         sb.append(", history='").append(history).append('\'');
+        sb.append(", contents='").append(contents).append('\'');
         sb.append('}');
         return sb.toString();
     }

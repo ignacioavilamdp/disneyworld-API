@@ -3,7 +3,6 @@ package com.challenge.disneyworld.dao;
 import com.challenge.disneyworld.models.domain.Content;
 import com.challenge.disneyworld.models.domain.Star;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -70,6 +69,12 @@ public class ContentDAOImp implements ContentDAO{
         return (search(title, null, null).size() != 0);
     }
 
+    @Override
+    public void delete(Content content) {
+        em.remove(content);
+    }
+
+    //TODO _ REMOVE, not being used
     @Override
     public void deleteById(long id) {
         em.remove(getById(id));

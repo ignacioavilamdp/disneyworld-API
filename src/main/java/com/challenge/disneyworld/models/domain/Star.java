@@ -34,7 +34,7 @@ public class Star {
     private String image;
     @Column(name = "HISTORY")
     private String history;
-    @ManyToMany
+    @ManyToMany      // This is the owning side of the relation
     @JoinTable(name = "STAR_CONTENT",
             joinColumns = @JoinColumn(name = "STAR_ID"),
             inverseJoinColumns = @JoinColumn(name = "CONTENT_ID")

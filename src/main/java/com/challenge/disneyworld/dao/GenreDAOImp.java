@@ -2,7 +2,6 @@ package com.challenge.disneyworld.dao;
 
 import com.challenge.disneyworld.models.domain.Genre;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -16,13 +15,11 @@ public class GenreDAOImp implements GenreDAO{
     private EntityManager em;
 
     @Override
-    @Transactional
     public Genre getById(long id) {
         return em.find(Genre.class, id);
     }
 
     @Override
-    @Transactional
     public Genre getByName(String name) {
         String string = "SELECT gr FROM Genre gr WHERE gr.name = :name";
         TypedQuery<Genre> query = em.createQuery(string, Genre.class);
@@ -35,7 +32,6 @@ public class GenreDAOImp implements GenreDAO{
     }
 
     @Override
-    @Transactional
     public List<Genre> getAll() {
         String string = "SELECT gr FROM Genre gr";
         TypedQuery<Genre> query = em.createQuery(string, Genre.class);

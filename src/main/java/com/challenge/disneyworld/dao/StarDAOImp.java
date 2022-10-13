@@ -3,7 +3,6 @@ package com.challenge.disneyworld.dao;
 import com.challenge.disneyworld.models.domain.Content;
 import com.challenge.disneyworld.models.domain.Star;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -76,9 +75,14 @@ public class StarDAOImp implements StarDAO{
     }
 
     @Override
-    public boolean deleteById(long id) {
+    public void delete(Star star) {
+        em.remove(star);
+    }
+
+    //TODO _ REMOVE, not being used
+    @Override
+    public void deleteById(long id) {
         em.remove(getById(id));
-        return !isById(id);
     }
 
     @Override

@@ -1,15 +1,16 @@
 package com.challenge.disneyworld.models.dto;
 
 
-import com.challenge.disneyworld.models.domain.Star;
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 import java.util.List;
 
 public class ContentDTODetail extends ContentDTOBase{
 
     private String rating;
-    private String genreName;
-    private List<StarDTOBase> stars;
+    private String genre;
+    private List<String> stars;
 
     public ContentDTODetail() {
     }
@@ -20,16 +21,16 @@ public class ContentDTODetail extends ContentDTOBase{
     public void setRating(String rating) {
         this.rating = rating;
     }
-    public String getGenreName() {
-        return genreName;
+    public String getGenre() {
+        return genre;
     }
-    public void setGenreName(String genreName) {
-        this.genreName = genreName;
+    public void setGenre(String genre) {
+        this.genre = genre;
     }
-    public List<StarDTOBase> getStars() {
+    public List<String> getStars() {
         return stars;
     }
-    public void setStars(List<StarDTOBase> stars) {
+    public void setStars(List<String> stars) {
         this.stars = stars;
     }
 
@@ -38,7 +39,7 @@ public class ContentDTODetail extends ContentDTOBase{
         final StringBuilder sb = new StringBuilder("ContentDTODetail{");
         sb.append(super.toString());
         sb.append(", rating='").append(rating).append('\'');
-        sb.append(", genreName='").append(genreName).append('\'');
+        sb.append(", genreName='").append(genre).append('\'');
         sb.append(", stars=").append(stars);
         sb.append('}');
         return sb.toString();

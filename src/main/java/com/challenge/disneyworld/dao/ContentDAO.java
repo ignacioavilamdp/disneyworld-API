@@ -3,7 +3,6 @@ package com.challenge.disneyworld.dao;
 import com.challenge.disneyworld.models.domain.Content;
 import com.challenge.disneyworld.models.domain.Star;
 
-import java.util.Collection;
 import java.util.List;
 
 public interface ContentDAO {
@@ -19,6 +18,8 @@ public interface ContentDAO {
 
     boolean isById(long id);
     boolean isByTitle(String title);
+
+    void delete(Content content);
 
     void deleteById(long id);
 

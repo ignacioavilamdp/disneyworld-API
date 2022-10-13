@@ -3,6 +3,7 @@ package com.challenge.disneyworld.service;
 import com.challenge.disneyworld.dao.ContentDAO;
 import com.challenge.disneyworld.dao.GenreDAO;
 import com.challenge.disneyworld.dao.StarDAO;
+import com.challenge.disneyworld.exceptions.*;
 import com.challenge.disneyworld.models.domain.Content;
 import com.challenge.disneyworld.models.domain.Genre;
 import com.challenge.disneyworld.models.domain.Star;
@@ -30,6 +31,9 @@ public class ContentService {
     @Autowired
     private GenreDAO genreDAO;
 
+    @Autowired
+    private StarService starService;
+
     @Transactional(readOnly = true)
     public List<ContentDTOBase> search(String title, Integer genreId, Boolean order){
         return contentDAO.search(title, genreId, order).
@@ -48,154 +52,114 @@ public class ContentService {
 
     @Transactional(readOnly = true)
     public ContentDTODetail getById(Long id){
+        Content content = contentDAO.getById(id);
+        if (content == null)
+            throw new NonExistentEntityException("There is no movie with ID: " + id);
+
         return ContentMapper.domainToDTODetail(contentDAO.getById(id));
     }
 
     @Transactional
-    public ContentDTODetail save(ContentDTODetail dto) {
-        if (dto.getTitle() == null){
-            String message = "Not accepted without title";
-            System.out.println(message);
-            return null;
-        }
+    public String deleteById(Long id) {
+        Content content = contentDAO.getById(id);
+        if ( content == null )
+            throw new NonExistentEntityException("There is no movie with ID: " + id);
 
-        if (contentDAO.isByTitle(dto.getTitle())){
-            String message = "There is already entity in the db with that title";
-            System.out.println(message);
-            return null;
-        }
-
-        if (dto.getGenreName() == null){
-            String message = "Not accepted without genre";
-            System.out.println(message);
-            return null;
-        }
-
-        Genre genre = genreDAO.getByName(dto.getGenreName());
-        if (genre == null){
-            String message = "No genre with that name";
-            System.out.println(message);
-            return null;
-        }
-
-        return ContentMapper.domainToDTODetail(
-                contentDAO.save(
-                        ContentMapper.DTOToDomain(dto, genre)));
+        contentDAO.delete(content);
+        return "Movie with ID: " + id + " - successfully removed";
     }
 
     @Transactional
-    public ContentDTODetail update(ContentDTODetail dto){
-        if (dto.getTitle() == null){
-            String message = "Not accepted without title";
-            System.out.println(message);
-            return null;
-        }
+    public ContentDTODetail updateById(Long id, ContentDTODetail dto){
+        if (id != dto.getId())
+            throw new TryingToModifyIdException("The id in the payload does not match the id in the URI. " +
+                    "Are you trying to modify the id? This is not allowed.");
+
+        if (dto.getTitle() == null)
+            throw new NoNamePassedException("No title passed. Title is mandatory.");
 
         Content contentById = contentDAO.getById(dto.getId());
-        Content contentByName = contentDAO.getByTitle(dto.getTitle());
-        if (contentById == null){
-            String message = "No entity in the db with that id";
-            System.out.println(message);
-            return null;
-        }
-        if (contentByName != null && contentByName.getId() != contentById.getId()){
-            String message = "There is already an entity with the same title in the db (different from the entity that must be updated)";
-            System.out.println(message);
-            return null;
-        }
+        if (contentById == null)
+            throw new NonExistentEntityException("There is no movie with ID: " + id);
 
-        if (dto.getGenreName() == null){
-            String message = "Not accepted without genre";
-            System.out.println(message);
-            return null;
-        }
+        Content contentByTitle = contentDAO.getByTitle(dto.getTitle());
+        if (contentByTitle != null && contentByTitle.getId() != contentById.getId())
+            throw new DuplicateNameException("There is already a movie with the same title (" + dto.getTitle() + "). No duplicates allowed");
 
-        Genre genre = genreDAO.getByName(dto.getGenreName());
-        if (genre == null){
-            String message = "No genre with that name";
-            System.out.println(message);
-            return null;
-        }
-
-        // Instead of copying, I set each value - To review TODO
-        contentById.setTitle(dto.getTitle());
-        contentById.setImage(dto.getImage());
-        contentById.setDate(dto.getDate());
-        contentById.setRating(dto.getRating());
-        contentById.setGenre(genre);
-        //contentById.setStars(dto.getStars());
-
+        modifyEntityFromDTO(contentById, dto);
         return ContentMapper.domainToDTODetail(contentById);
     }
 
     @Transactional
-    public boolean deleteById(Long id) {
-        if (!contentDAO.isById(id)){
-            String message = "Not entity with that id in the db";
-            System.out.println(message);
-            return false;
-        }
+    public ContentDTODetail save(ContentDTODetail dto) {
+        if (dto.getTitle() == null)
+            throw new NoNamePassedException("No title passed. Title is mandatory.");
 
-        contentDAO.deleteById(id);
-        return (!contentDAO.isById(id));
+        if (contentDAO.isByTitle(dto.getTitle()))
+            throw new DuplicateNameException("There is already a movie with the same title (" + dto.getTitle() + "). No duplicates allowed");
+
+        // TODO - SOME CHECK OVER ID
+        Content content = new Content();
+        modifyEntityFromDTO(content, dto);
+        return ContentMapper.domainToDTODetail(contentDAO.save(content));
     }
 
     @Transactional
-    public boolean relateStar(Long starId, Long contentId) {
-        Star star = starDAO.getById(starId);
-        Content content = contentDAO.getById(contentId);
-
-        if (star == null){
-            System.out.println("No star with that id");
-            return false;
-        }
-
-        if (content == null){
-            System.out.println("No content with that id");
-            return false;
-        }
-
-        if (star.getContents().contains(content)){
-            System.out.println("The relation already exists");
-            return false;
-        }
-
-        return star.getContents().add(content);
+    public String relateStar(Long starId, Long contentId) {
+        return starService.relateContent(starId, contentId);
     }
 
     @Transactional
-    public boolean unRelateStar(Long starId, Long contentId) {
-        Star star = starDAO.getById(starId);
-        Content content = contentDAO.getById(contentId);
-
-        if (star == null){
-            System.out.println("No star with that id");
-            return false;
-        }
-
-        if (content == null){
-            System.out.println("No content with that id");
-            return false;
-        }
-
-        if (!star.getContents().contains(content)){
-            System.out.println("The relation does not exist");
-            return false;
-        }
-
-        return star.getContents().remove(content);
+    public String unRelateStar(Long starId, Long contentId) {
+        return starService.unRelateContent(starId, contentId);
     }
 
     @Transactional(readOnly = true)
     public List<StarDTOBase> getStarsById(Long id) {
-        if (!contentDAO.isById(id)){
-            String message = "Not entity with that id in the db";
-            System.out.println(message);
-            return null;
-        }
+        if (!contentDAO.isById(id))
+            throw new NonExistentEntityException("There is no movie with ID: " + id);
+
         return contentDAO.getStarsById(id).
                 stream().
                 map(star -> StarMapper.domainToDTOBase(star)).
                 collect(Collectors.toList());
+    }
+
+    private void modifyEntityFromDTO(Content content, ContentDTODetail dto){
+        content.setTitle(dto.getTitle());
+        content.setImage(dto.getImage());
+        content.setDate(dto.getDate());
+        content.setRating(dto.getRating());
+
+        /*
+         * First we need to check if the genre entity exists.
+         */
+        Genre genre = genreDAO.getByName(dto.getGenre());
+        if (genre == null)
+            throw new NonExistentEntityException("There is no genre named: " + dto.getGenre());
+        content.setGenre(genre);
+
+        /*
+         * We need to remove all the relations between the content and its stars
+         * As the star entity is the owning side of the relation, we need to
+         * remove the content entity from the star first.
+         */
+        for (Star star : content.getStars()){
+            star.getContents().remove(content);
+        }
+        content.getStars().clear();
+
+        /*
+         * For each name in the dto we need to check if the star entity exists.
+         * As the Star entity is the owning side of the relation, we need to
+         * add the content entity to the star first.
+         */
+        for (String starName : dto.getStars()){
+            Star star = starDAO.getByName(starName);
+            if (star == null)
+                throw new NonExistentEntityException("There is no character with name: " + starName + ". Please, add the character first.");
+            star.getContents().add(content);
+            content.getStars().add(star);
+        }
     }
 }

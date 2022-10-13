@@ -5,6 +5,9 @@ import com.challenge.disneyworld.models.dto.ContentDTODetail;
 import com.challenge.disneyworld.models.dto.StarDTOBase;
 import com.challenge.disneyworld.models.dto.StarDTODetail;
 import com.challenge.disneyworld.service.StarService;
+import com.sun.istack.NotNull;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +22,8 @@ public class StarController {
     @Autowired
     private StarService service;
 
+
+    @ApiOperation("Search a character")
     @GetMapping
     public ResponseEntity<List<StarDTOBase>> search(
             @RequestParam(name = "name", required = false)  String name,
@@ -28,79 +33,60 @@ public class StarController {
         return ResponseEntity.ok(service.search(name, age, weight, movieId));
     }
 
-    @GetMapping("/all")
+    @ApiOperation("Add a new character")
+    @PostMapping
+    public ResponseEntity<StarDTODetail> save(@RequestBody StarDTODetail dto) {
+        StarDTODetail savedDTO = service.save(dto);
+        URI uri = URI.create("characters/"+ savedDTO.getId());
+        return ResponseEntity.created(uri).body(savedDTO);
+    }
+
+    @ApiOperation("Obtain a detailed list of all characters")
+    @GetMapping("/detail")
     public ResponseEntity<List<StarDTODetail>> getAll() {
         return ResponseEntity.ok().body(service.getAll());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<StarDTODetail> getById(@PathVariable("id") Long id){
+    @ApiOperation("Find a character by ID")
+    @GetMapping("/{characterId}")
+    public ResponseEntity<StarDTODetail> getById(@PathVariable("characterId") Long id){
         return ResponseEntity.ok().body(service.getById(id));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteById(@PathVariable("id") Long id){
-        if (service.deleteById(id))
-            return ResponseEntity.ok().body("Deleted correctly");
-        else
-            return ResponseEntity.badRequest().body("Nothing deleted");
+    @ApiOperation("Delete a character")
+    @DeleteMapping("/{characterId}")
+    public ResponseEntity<String> deleteById(@PathVariable("characterId") Long id){
+        return ResponseEntity.ok().body(service.deleteById(id));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<StarDTODetail> update(@PathVariable("id") Long id,
+    @ApiOperation("Update a character")
+    @PutMapping("/{characterId}")
+    public ResponseEntity<StarDTODetail> updateById(@PathVariable("characterId") Long id,
                                                 @RequestBody StarDTODetail dto){
-        dto.setId(id);
-        StarDTODetail updatedDTO = service.update(dto);
-        if (updatedDTO != null) {
-            URI uri = URI.create("characters/"+ updatedDTO.getId());
-            return ResponseEntity.accepted().location(uri).body(updatedDTO);
-        }
-        else {
-            return ResponseEntity.badRequest().build();
-        }
+        StarDTODetail updatedDTO = service.updateById(id, dto);
+        URI uri = URI.create("characters/"+ updatedDTO.getId());
+        return ResponseEntity.accepted().location(uri).body(updatedDTO);
     }
 
-    @PostMapping
-    public ResponseEntity<StarDTODetail> save(@RequestBody StarDTODetail dto) {
-        StarDTODetail savedDTO = service.save(dto);
-        if (savedDTO != null) {
-            URI uri = URI.create("characters/"+ savedDTO.getId());
-            return ResponseEntity.accepted().location(uri).body(savedDTO);
-        }
-        else {
-            return ResponseEntity.badRequest().build();
-        }
-    }
-
-    @GetMapping("/{id}/movies")
-    public ResponseEntity<List<ContentDTOBase>> getContents(@PathVariable("id") Long id){
+    @ApiOperation("Find movies of a character")
+    @GetMapping("/{characterId}/movies")
+    public ResponseEntity<List<ContentDTOBase>> getContents(@PathVariable("characterId") Long id){
         return ResponseEntity.ok().body(service.getContentsById(id));
     }
 
-    @PostMapping("/{starId}/movies/{contentId}")
-    public ResponseEntity<String> relateContent(@PathVariable("starId") Long starId,
-                                         @PathVariable("contentId") Long contentId){
-        if (service.relateContent(starId, contentId)){
-            URI uri = URI.create("characters/" + starId + "movies/" + contentId);
-            return ResponseEntity.accepted().
-                    location(uri).body("Relationship established");
-        }
-        else {
-            return ResponseEntity.badRequest().build();
-        }
+    @ApiOperation("Add movie to a character")
+    @PostMapping("/{characterId}/movies/{movieId}")
+    public ResponseEntity<String> relateContent(@PathVariable("characterId") Long starId,
+                                         @PathVariable("movieId") Long contentId){
+        URI uri = URI.create("characters/" + starId + "movies/" + contentId);
+        return ResponseEntity.created(uri).body(service.relateContent(starId, contentId));
     }
 
-    @DeleteMapping("/{starId}/movies/{contentId}")
-    public ResponseEntity<String> unRelateContent(@PathVariable("starId") Long starId,
-                                         @PathVariable("contentId") Long contentId){
-        if (service.unRelateContent(starId, contentId)){
-            URI uri = URI.create("characters/" + starId + "movies/");
-            return ResponseEntity.accepted().
-                    location(uri).body("Relationship removed");
-        }
-        else {
-            return ResponseEntity.badRequest().build();
-        }
+    @ApiOperation("Delete a movie from a character")
+    @DeleteMapping("/{characterId}/movies/{movieId}")
+    public ResponseEntity<String> unRelateContent(@PathVariable("characterId") Long starId,
+                                         @PathVariable("movieId") Long contentId){
+            return ResponseEntity.ok().body(service.unRelateContent(starId, contentId));
     }
 
 }

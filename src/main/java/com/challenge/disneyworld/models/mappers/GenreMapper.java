@@ -12,6 +12,7 @@ public class GenreMapper {
         GenreDTOBase dto = null;
         if (genre != null) {
             dto = new GenreDTOBase();
+            dto.setId(genre.getId());
             dto.setName(genre.getName());
             dto.setImage(genre.getImage());
         }

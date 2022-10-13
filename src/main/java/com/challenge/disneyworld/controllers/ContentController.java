@@ -6,6 +6,7 @@ import com.challenge.disneyworld.models.dto.StarDTOBase;
 import com.challenge.disneyworld.models.dto.StarDTODetail;
 import com.challenge.disneyworld.service.ContentService;
 import com.challenge.disneyworld.service.StarService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,7 @@ public class ContentController {
     @Autowired
     private ContentService service;
 
+    @ApiOperation("Search a movie")
     @GetMapping
     public ResponseEntity<List<ContentDTOBase>> search(
             @RequestParam(name = "title", required = false) String title,
@@ -27,6 +29,15 @@ public class ContentController {
             @RequestParam(name = "order", required = false) String order){
         return ResponseEntity.ok(service.search(title, genreId, true));
     }
+
+
+    @PostMapping
+    public ResponseEntity<ContentDTODetail> save(@RequestBody ContentDTODetail dto) {
+        ContentDTODetail savedDTO = service.save(dto);
+        URI uri = URI.create("movies/"+ savedDTO.getId());
+        return ResponseEntity.created(uri).body(savedDTO);
+    }
+
 
     @GetMapping("/all")
     public ResponseEntity<List<ContentDTODetail>> getAll() {
@@ -40,36 +51,15 @@ public class ContentController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteById(@PathVariable("id") Long id){
-        if (service.deleteById(id))
-            return ResponseEntity.ok().body("Deleted correctly");
-        else
-            return ResponseEntity.badRequest().body("Nothing deleted");
+        return ResponseEntity.ok().body(service.deleteById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ContentDTODetail> update(@PathVariable("id") Long id,
+    public ResponseEntity<ContentDTODetail> updateById(@PathVariable("id") Long id,
                                                    @RequestBody ContentDTODetail dto){
-        dto.setId(id);
-        ContentDTODetail updatedDTO = service.update(dto);
-        if (updatedDTO != null) {
-            URI uri = URI.create("movies/"+ updatedDTO.getId());
-            return ResponseEntity.accepted().location(uri).body(updatedDTO);
-        }
-        else {
-            return ResponseEntity.badRequest().build();
-        }
-    }
-
-    @PostMapping
-    public ResponseEntity<ContentDTODetail> save(@RequestBody ContentDTODetail dto) {
-        ContentDTODetail savedDTO = service.save(dto);
-        if (savedDTO != null) {
-            URI uri = URI.create("movies/"+ savedDTO.getId());
-            return ResponseEntity.accepted().location(uri).body(savedDTO);
-        }
-        else {
-            return ResponseEntity.badRequest().build();
-        }
+        ContentDTODetail updatedDTO = service.updateById(id, dto);
+        URI uri = URI.create("movies/"+ updatedDTO.getId());
+        return ResponseEntity.accepted().location(uri).body(updatedDTO);
     }
 
     @GetMapping("/{id}/characters")
@@ -77,30 +67,17 @@ public class ContentController {
         return ResponseEntity.ok().body(service.getStarsById(id));
     }
 
-    @PostMapping("/{contentId}/characters/{starId}")
-    public ResponseEntity<String> relateStar(@PathVariable("starId") Long starId,
-                                                @PathVariable("contentId") Long contentId){
-        if (service.relateStar(starId, contentId)){
-            URI uri = URI.create("movies/" + contentId + "characters/" + starId);
-            return ResponseEntity.accepted().
-                    location(uri).body("Relationship established");
-        }
-        else {
-            return ResponseEntity.badRequest().build();
-        }
+    @PostMapping("/{id}/characters/{characterId}")
+    public ResponseEntity<String> relateStar(@PathVariable("characterId") Long starId,
+                                                @PathVariable("id") Long contentId){
+        URI uri = URI.create("movies/" + contentId + "characters/" + starId);
+        return ResponseEntity.created(uri).body(service.relateStar(starId, contentId));
     }
 
-    @DeleteMapping("/{contentId}/characters/{starId}")
-    public ResponseEntity<String> unRelateStar(@PathVariable("starId") Long starId,
-                                                  @PathVariable("contentId") Long contentId){
-        if (service.unRelateStar(starId, contentId)){
-            URI uri = URI.create("movies/" + contentId + "characters/");
-            return ResponseEntity.accepted().
-                    location(uri).body("Relationship removed");
-        }
-        else {
-            return ResponseEntity.badRequest().build();
-        }
+    @DeleteMapping("/{id}/characters/{characterId}")
+    public ResponseEntity<String> unRelateStar(@PathVariable("characterId") Long starId,
+                                                  @PathVariable("id") Long contentId){
+        return ResponseEntity.ok().body(service.unRelateStar(starId, contentId));
     }
 
 }

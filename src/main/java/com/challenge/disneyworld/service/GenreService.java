@@ -8,6 +8,7 @@ import com.challenge.disneyworld.models.mappers.GenreMapper;
 import com.challenge.disneyworld.models.mappers.StarMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,6 +19,7 @@ public class GenreService {
     @Autowired
     private GenreDAO dao;
 
+    @Transactional(readOnly = true)
     public List<GenreDTODetail> getAllDetail() {
         return dao.getAll().
                 stream().
@@ -25,6 +27,7 @@ public class GenreService {
                 collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<GenreDTOBase> getAllBase() {
         return dao.getAll().
                 stream().

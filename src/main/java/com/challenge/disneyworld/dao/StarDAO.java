@@ -25,7 +25,9 @@ public interface StarDAO {
     boolean isById(long id);
     boolean isByName(String name);
 
-    boolean deleteById(long id);
+    void delete(Star star);
+
+    void deleteById(long id);
 
     List<Content> getContentsById(Long id);
 
