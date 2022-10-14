@@ -95,7 +95,7 @@ public class ContentService {
         if (dto.getTitle() == null)
             throw new NoNamePassedException("No title passed. Title is mandatory.");
 
-        if (contentDAO.isByTitle(dto.getTitle()))
+        if (contentDAO.existsByTitle(dto.getTitle()))
             throw new DuplicateNameException("There is already a movie with the same title (" + dto.getTitle() + "). No duplicates allowed");
 
         // TODO - SOME CHECK OVER ID
@@ -116,7 +116,7 @@ public class ContentService {
 
     @Transactional(readOnly = true)
     public List<StarDTOBase> getStarsById(Long id) {
-        if (!contentDAO.isById(id))
+        if (!contentDAO.existsById(id))
             throw new NonExistentEntityException("There is no movie with ID: " + id);
 
         return contentDAO.getStarsById(id).

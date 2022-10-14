@@ -38,29 +38,7 @@ public class ContentMapper {
                 starsNames.add(star.getName());
             }
             dto.setStars(starsNames);
-            /*
-            dto.setStars(
-                    content.getStars().
-                            stream().
-                            map(star -> StarMapper.domainToDTOBase(star)).
-                            collect(Collectors.toList())
-            );
-             */
         }
         return dto;
-    }
-
-    public static Content DTOToDomain(ContentDTODetail dto, Genre genre){
-        Content content = null;
-        if (dto != null){
-            content = new Content();
-            content.setId(dto.getId());
-            content.setTitle(dto.getTitle());
-            content.setDate(dto.getDate());
-            content.setRating(dto.getRating());
-            content.setImage(dto.getImage());
-            content.setGenre(genre);
-        }
-        return content;
     }
 }

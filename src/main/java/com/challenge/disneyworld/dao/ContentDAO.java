@@ -9,19 +9,14 @@ public interface ContentDAO {
 
     Content getById(long id);
     Content getByTitle(String title);
+    Content save(Content content);
+    void delete(Content content);
 
     List<Content> getAll();
     List<Content> search(String title, Integer genreId, Boolean order);
-
-    Content save(Content content);
-    Content update(Content content);
-
-    boolean isById(long id);
-    boolean isByTitle(String title);
-
-    void delete(Content content);
-
-    void deleteById(long id);
-
     List<Star> getStarsById(Long id);
+
+    boolean existsById(long id);
+    boolean existsByTitle(String title);
+
 }

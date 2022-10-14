@@ -88,3 +88,14 @@ INSERT INTO STAR_CONTENT
 VALUES 	(2, 1),
 	    (5, 1),
 		(2, 2);
+
+
+--USER
+INSERT INTO USER
+        (NAME,
+        EMAIL,
+        PASSWORD)
+VALUES
+        ('IGNACIO',
+        'ignacio@gmail.com'
+        '1234')

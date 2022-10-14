@@ -39,12 +39,12 @@ public class GenreDAOImp implements GenreDAO{
     }
 
     @Override
-    public boolean isById(long id) {
+    public boolean existsById(long id) {
         return (getById(id) != null);
     }
 
     @Override
-    public boolean isByName(String name) {
+    public boolean existsByName(String name) {
         return (getByName(name) != null);
     }
 }

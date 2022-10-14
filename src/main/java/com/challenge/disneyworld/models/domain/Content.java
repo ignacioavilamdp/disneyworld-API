@@ -9,7 +9,6 @@ import java.util.List;
 @Table(name = "CONTENT")
 public class Content {
     /*
-    *
         CREATE TABLE CONTENT
         (
            ID          BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY,

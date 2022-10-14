@@ -59,30 +59,19 @@ public class StarDAOImp implements StarDAO{
         return star;
     }
 
-    //TODO _ REMOVE, not being used
-    public Star update(Star star) {
-        return em.find(Star.class, star.getId()).copy(star);
-    }
-
     @Override
-    public boolean isById(long id) {
+    public boolean existsById(long id) {
         return (getById(id) != null);
     }
 
     @Override
-    public boolean isByName(String name) {
+    public boolean existsByName(String name) {
         return (search(name, null, null,null).size() != 0);
     }
 
     @Override
     public void delete(Star star) {
         em.remove(star);
-    }
-
-    //TODO _ REMOVE, not being used
-    @Override
-    public void deleteById(long id) {
-        em.remove(getById(id));
     }
 
     @Override

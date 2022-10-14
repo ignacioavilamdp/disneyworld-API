@@ -86,7 +86,7 @@ public class StarService {
         if (dto.getName() == null)
             throw new NoNamePassedException("No name passed. Name is mandatory.");
 
-        if (starDAO.isByName(dto.getName()))
+        if (starDAO.existsByName(dto.getName()))
             throw new DuplicateNameException("There is already a character with the same name (" + dto.getName() + "). No duplicates allowed");
 
         // TODO - SOME CHECK OVER ID
@@ -133,7 +133,7 @@ public class StarService {
 
     @Transactional(readOnly = true)
     public List<ContentDTOBase> getContentsById(Long id) {
-        if (!starDAO.isById(id))
+        if (!starDAO.existsById(id))
             throw new NonExistentEntityException("There is no character with that ID.");
 
         return starDAO.getContentsById(id).

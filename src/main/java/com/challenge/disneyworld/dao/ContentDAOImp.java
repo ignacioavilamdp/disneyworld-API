@@ -53,31 +53,19 @@ public class ContentDAOImp implements ContentDAO{
         return content;
     }
 
-    //TODO _ REMOVE, not being used
     @Override
-    public Content update(Content content) {
-        return em.find(Content.class, content.getId()).copy(content);
-    }
-
-    @Override
-    public boolean isById(long id) {
+    public boolean existsById(long id) {
         return (getById(id) != null);
     }
 
     @Override
-    public boolean isByTitle(String title) {
+    public boolean existsByTitle(String title) {
         return (search(title, null, null).size() != 0);
     }
 
     @Override
     public void delete(Content content) {
         em.remove(content);
-    }
-
-    //TODO _ REMOVE, not being used
-    @Override
-    public void deleteById(long id) {
-        em.remove(getById(id));
     }
 
     @Override
@@ -89,6 +77,5 @@ public class ContentDAOImp implements ContentDAO{
         query.setParameter("id", id);
         return query.getResultList();
     }
-
 
 }

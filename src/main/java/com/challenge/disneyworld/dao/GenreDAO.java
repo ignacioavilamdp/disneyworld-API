@@ -7,10 +7,10 @@ import java.util.List;
 public interface GenreDAO {
 
     Genre getById(long id);
-
     Genre getByName(String name);
 
     List<Genre> getAll();
-    boolean isById(long id);
-    boolean isByName(String name);
+
+    boolean existsById(long id);
+    boolean existsByName(String name);
 }

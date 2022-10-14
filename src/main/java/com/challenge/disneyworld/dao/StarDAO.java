@@ -8,10 +8,6 @@ import java.util.List;
 public interface StarDAO {
     Star getById(long id);
     Star getByName(String name);
-
-    List<Star> getAll();
-    List<Star> search(String name, Short age, Float weight, Long movie);
-
     /**
      * Saves the given entity. Returns the entity saved as the save operations
      * might have changed the entity instance.
@@ -20,15 +16,12 @@ public interface StarDAO {
      * @return the star added
      */
     Star save(Star star);
-    Star update(Star star);
-
-    boolean isById(long id);
-    boolean isByName(String name);
-
     void delete(Star star);
 
-    void deleteById(long id);
-
+    List<Star> getAll();
+    List<Star> search(String name, Short age, Float weight, Long movie);
     List<Content> getContentsById(Long id);
 
+    boolean existsById(long id);
+    boolean existsByName(String name);
 }
