@@ -1,21 +1,14 @@
 package com.challenge.disneyworld.models.dto;
 
 public class UserDTO {
-    private Long id;
     private String name;
     private String email;
     private String password;
-    //private List<AppUserRole> appUserRoles;
+    private String role;
 
     public UserDTO() {
     }
 
-    public Long getId() {
-        return id;
-    }
-    public void setId(Long id) {
-        this.id = id;
-    }
     public String getName() {
         return name;
     }
@@ -33,5 +26,11 @@ public class UserDTO {
     }
     public void setEmail(String email) {
         this.email = email;
+    }
+    public String getRole() {
+        return role;
+    }
+    public void setRole(String role) {
+        this.role = role;
     }
 }
