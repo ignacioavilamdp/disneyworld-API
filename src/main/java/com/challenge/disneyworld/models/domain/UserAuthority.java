@@ -2,11 +2,11 @@ package com.challenge.disneyworld.models.domain;
 
 import org.springframework.security.core.GrantedAuthority;
 
-public class UserRole implements GrantedAuthority {
+public class UserAuthority implements GrantedAuthority {
 
     private final String role;
 
-    public UserRole(String role) {
+    public UserAuthority(String role) {
         this.role = role;
     }
 

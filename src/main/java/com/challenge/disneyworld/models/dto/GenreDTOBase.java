@@ -1,5 +1,8 @@
 package com.challenge.disneyworld.models.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(name = "Genre")
 public class GenreDTOBase {
 
     private int id;

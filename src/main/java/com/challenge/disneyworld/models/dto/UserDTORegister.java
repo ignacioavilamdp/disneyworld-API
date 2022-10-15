@@ -1,12 +1,15 @@
 package com.challenge.disneyworld.models.dto;
 
-public class UserDTO {
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(name = "User-register")
+public class UserDTORegister {
     private String name;
     private String email;
     private String password;
     private String role;
 
-    public UserDTO() {
+    public UserDTORegister() {
     }
 
     public String getName() {

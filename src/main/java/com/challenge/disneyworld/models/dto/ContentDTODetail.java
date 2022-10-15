@@ -1,15 +1,15 @@
 package com.challenge.disneyworld.models.dto;
 
-
-import com.fasterxml.jackson.annotation.JsonAlias;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;
 
+@Schema(name = "Movie-detail")
 public class ContentDTODetail extends ContentDTOBase{
 
     private String rating;
     private String genre;
+    //@Schema(name = "characters")
     private List<String> stars;
 
     public ContentDTODetail() {

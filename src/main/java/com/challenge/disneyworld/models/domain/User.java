@@ -1,6 +1,7 @@
 package com.challenge.disneyworld.models.domain;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "APPUSER")
@@ -9,9 +10,10 @@ public class User {
         CREATE TABLE APPUSER
         (
             ID          BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY,
-            NAME        VARCHAR(45) NOT NULL UNIQUE,
-            EMAIL       VARCHAR(45) NOT NULL,
-            PASSWORD    VARCHAR(45) NOT NULL,
+            NAME        VARCHAR(255) NOT NULL UNIQUE,
+            EMAIL       VARCHAR(45) NOT NULL UNIQUE,
+            PASSWORD    VARCHAR(255) NOT NULL,
+            ROLE        ENUM('ROLE_ADMIN','ROLE_USER),
             CONSTRAINT  PK_USER PRIMARY KEY(ID)
         );
      */
@@ -22,10 +24,12 @@ public class User {
     private long id;
     @Column(name = "NAME", unique = true)
     private String name;
-    @Column(name = "EMAIL")
+    @Column(name = "EMAIL", unique = true)
     private String email;
     @Column(name = "PASSWORD")
     private String password;
+    @Column(name = "ROLE")
+    private String role;
 
     public User() {
     }
@@ -53,5 +57,11 @@ public class User {
     }
     public void setPassword(String password) {
         this.password = password;
+    }
+    public String getRole() {
+        return role;
+    }
+    public void setRole(String role) {
+        this.role = role;
     }
 }

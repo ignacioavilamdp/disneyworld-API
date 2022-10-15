@@ -11,52 +11,28 @@ import javax.servlet.http.HttpServletRequest;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(NonExistentEntityException.class)
+    @ExceptionHandler(
+                    {NonExistentEntityException.class,
+                    NonExistentRelationException.class})
     @ResponseBody
-    public ResponseEntity<ErrorMessage> nonExistentStarExceptionHandler(HttpServletRequest req, NonExistentEntityException ex){
+    public ResponseEntity<ErrorMessage> nonExistentStarExceptionHandler(HttpServletRequest req, RuntimeException ex){
         return new ResponseEntity<>(
-                new ErrorMessage(ex.getMessage(), ex.ERROR_CODE, req.getRequestURI()),
+                new ErrorMessage(ex.getMessage(), 1, req.getRequestURI()),
                 HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(NoNamePassedException.class)
+    @ExceptionHandler(
+                    {NoNamePassedException.class,
+                    TryingToModifyIdException.class,
+                    DuplicateNameException.class,
+                    DuplicateRelationException.class,
+                    DuplicateUserException.class})
     @ResponseBody
-    public ResponseEntity<ErrorMessage> noNamePassedExceptionHandler(HttpServletRequest req, NoNamePassedException ex){
+    public ResponseEntity<ErrorMessage> noNamePassedExceptionHandler(HttpServletRequest req, RuntimeException ex){
         return new ResponseEntity<>(
-                new ErrorMessage(ex.getMessage(), ex.ERROR_CODE, req.getRequestURI()),
+                new ErrorMessage(ex.getMessage(), 2, req.getRequestURI()),
                 HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(DuplicateNameException.class)
-    @ResponseBody
-    public ResponseEntity<ErrorMessage> duplicateNameExceptionHandler(HttpServletRequest req, DuplicateNameException ex){
-        return new ResponseEntity<>(
-                new ErrorMessage(ex.getMessage(), ex.ERROR_CODE, req.getRequestURI()),
-                HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(TryingToModifyIdException.class)
-    @ResponseBody
-    public ResponseEntity<ErrorMessage> tryingToModifyIdExceptionHandler(HttpServletRequest req, TryingToModifyIdException ex){
-        return new ResponseEntity<>(
-                new ErrorMessage(ex.getMessage(), ex.ERROR_CODE, req.getRequestURI()),
-                HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(DuplicateRelationException.class)
-    @ResponseBody
-    public ResponseEntity<ErrorMessage> duplicateRelationExceptionHandler(HttpServletRequest req, DuplicateRelationException ex){
-        return new ResponseEntity<>(
-                new ErrorMessage(ex.getMessage(), ex.ERROR_CODE, req.getRequestURI()),
-                HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(NonExistentRelationException.class)
-    @ResponseBody
-    public ResponseEntity<ErrorMessage> nonExistentRelationExceptionHandler(HttpServletRequest req, NonExistentRelationException ex){
-        return new ResponseEntity<>(
-                new ErrorMessage(ex.getMessage(), ex.ERROR_CODE, req.getRequestURI()),
-                HttpStatus.NOT_FOUND);
-    }
 
 }

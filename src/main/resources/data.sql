@@ -91,11 +91,17 @@ VALUES 	(2, 1),
 
 
 --USER
-INSERT INTO USER
+INSERT INTO APPUSER
         (NAME,
         EMAIL,
-        PASSWORD)
+        PASSWORD,
+        ROLE)
 VALUES
-        ('IGNACIO',
-        'ignacio@gmail.com'
-        '1234')
+        ('admin',
+        'admin@gmail.com',
+        '$2a$10$xT0TheZpa8SuouaE3CKwx.61x5EG5G9b6lBrrTA4gFDkHLQfKwOL2', -- admin
+        'ROLE_ADMIN'),
+        ('user',
+        'user@gmail.com',
+        '$2a$10$JH30fjoMDqnupW1fFCFFE.OxRaLoO9asnHvb9LXm0DSEnEmAdlYNS', -- user
+        'ROLE_USER');

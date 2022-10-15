@@ -1,7 +1,10 @@
 package com.challenge.disneyworld.models.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.time.LocalDate;
 
+@Schema(name = "Movie")
 public class ContentDTOBase {
 
     private long id;

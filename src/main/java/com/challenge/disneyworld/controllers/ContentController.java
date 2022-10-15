@@ -4,24 +4,27 @@ import com.challenge.disneyworld.models.dto.ContentDTOBase;
 import com.challenge.disneyworld.models.dto.ContentDTODetail;
 import com.challenge.disneyworld.models.dto.StarDTOBase;
 import com.challenge.disneyworld.service.ContentService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
 
-@Api(tags = "movie", description = "everything about disney movies")
 @RestController
 @RequestMapping("/movies")
+@Tag(name = "movie", description = "everything about disney movies")
+@SecurityRequirement(name = "DisneyAPI")
 public class ContentController {
 
     @Autowired
     private ContentService service;
 
-    @ApiOperation("Search a movie")
+    @Operation(summary = "Search a movie")
     @GetMapping
     public ResponseEntity<List<ContentDTOBase>> search(
             @RequestParam(name = "title", required = false) String title,
@@ -30,34 +33,41 @@ public class ContentController {
         return ResponseEntity.ok(service.search(title, genreId, true));
     }
 
-    @ApiOperation("Add a new movie")
+    @Operation(summary = "Add a new movie",
+               description = "Adds a new movie, including its list of characters. The characters passed " +
+                             "in the characters list must be already included.")
     @PostMapping
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<ContentDTODetail> save(@RequestBody ContentDTODetail dto) {
         ContentDTODetail savedDTO = service.save(dto);
         URI uri = URI.create("movies/"+ savedDTO.getId());
         return ResponseEntity.created(uri).body(savedDTO);
     }
 
-    @ApiOperation("Obtain a detailed list of all movies")
+    @Operation(summary = "Obtain a detailed list of all movies")
     @GetMapping("/detail")
     public ResponseEntity<List<ContentDTODetail>> getAll() {
         return ResponseEntity.ok().body(service.getAll());
     }
 
-    @ApiOperation("Find a movie")
+    @Operation(summary = "Find a movie")
     @GetMapping("/{movieId}")
     public ResponseEntity<ContentDTODetail> getById(@PathVariable("movieId") Long id){
         return ResponseEntity.ok().body(service.getById(id));
     }
 
-    @ApiOperation("Delete a movie")
+    @Operation(summary = "Delete a movie")
     @DeleteMapping("/{movieId}")
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<String> deleteById(@PathVariable("movieId") Long id){
         return ResponseEntity.ok().body(service.deleteById(id));
     }
 
-    @ApiOperation("Update a movie (including its characters)")
+    @Operation(summary = "Update a movie",
+               description = "Updates a movie, including its list of characters. The characters passed " +
+                             "in the characters list must be already included.")
     @PutMapping("/{movieId}")
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<ContentDTODetail> updateById(@PathVariable("movieId") Long id,
                                                    @RequestBody ContentDTODetail dto){
         ContentDTODetail updatedDTO = service.updateById(id, dto);
@@ -65,22 +75,24 @@ public class ContentController {
         return ResponseEntity.accepted().location(uri).body(updatedDTO);
     }
 
-    @ApiOperation("Find characters of a movie")
+    @Operation(summary = "Find characters of a movie")
     @GetMapping("/{movieId}/characters")
     public ResponseEntity<List<StarDTOBase>> getStars(@PathVariable("movieId") Long id){
         return ResponseEntity.ok().body(service.getStarsById(id));
     }
 
-    @ApiOperation("Add a character to a movie")
+    @Operation(summary = "Add a single character to a movie")
     @PostMapping("/{movieId}/characters/{characterId}")
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<String> relateStar(@PathVariable("characterId") Long starId,
                                                 @PathVariable("movieId") Long contentId){
         URI uri = URI.create("movies/" + contentId + "characters/" + starId);
         return ResponseEntity.created(uri).body(service.relateStar(starId, contentId));
     }
 
-    @ApiOperation("Delete a character from a movie")
+    @Operation(summary = "Delete a single character from a movie")
     @DeleteMapping("/{movieId}/characters/{characterId}")
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<String> unRelateStar(@PathVariable("characterId") Long starId,
                                                   @PathVariable("movieId") Long contentId){
         return ResponseEntity.ok().body(service.unRelateStar(starId, contentId));

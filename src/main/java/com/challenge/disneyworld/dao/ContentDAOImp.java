@@ -40,7 +40,10 @@ public class ContentDAOImp implements ContentDAO{
 
     @Override
     public Content getByTitle(String title) {
-        List<Content> contents = search(title, null, true);
+        String string =  "SELECT cnt FROM Content cnt WHERE cnt.title = :title";
+        TypedQuery<Content> query = em.createQuery(string, Content.class);
+        query.setParameter("title", title);
+        List<Content> contents = query.getResultList();
         if (contents.size() != 0){
             return contents.get(0);
         }
@@ -60,7 +63,7 @@ public class ContentDAOImp implements ContentDAO{
 
     @Override
     public boolean existsByTitle(String title) {
-        return (search(title, null, null).size() != 0);
+        return (getByTitle(title) != null);
     }
 
     @Override

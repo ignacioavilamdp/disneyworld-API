@@ -46,7 +46,10 @@ public class StarDAOImp implements StarDAO{
 
     @Override
     public Star getByName(String name) {
-        List<Star> stars = search(name, null, null, null);
+        String string =  "SELECT st FROM Star st WHERE st.name = :name";
+        TypedQuery<Star> query = em.createQuery(string, Star.class);
+        query.setParameter("name", name);
+        List<Star> stars = query.getResultList();
         if (stars.size() != 0){
             return stars.get(0);
         }
@@ -66,7 +69,7 @@ public class StarDAOImp implements StarDAO{
 
     @Override
     public boolean existsByName(String name) {
-        return (search(name, null, null,null).size() != 0);
+        return (getByName(name) != null);
     }
 
     @Override

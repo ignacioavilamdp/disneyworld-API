@@ -1,12 +1,9 @@
 package com.challenge.disneyworld.exceptions;
 
-public class DuplicateNameException extends RuntimeException{
+public class DuplicateUserException extends RuntimeException{
 
-    public static final int ERROR_CODE = 3;
-
-    public DuplicateNameException(String message){
+    public DuplicateUserException(String message){
         super(message);
     }
-
 
 }

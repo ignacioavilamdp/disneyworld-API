@@ -1,13 +1,16 @@
 package com.challenge.disneyworld.models.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;
 
+@Schema(name = "Character-detail")
 public class StarDTODetail extends StarDTOBase{
 
     private short age;
     private float weight;
     private String history;
+    //@Schema(name = "movies")
     private List<String> contents;
 
     public StarDTODetail() {

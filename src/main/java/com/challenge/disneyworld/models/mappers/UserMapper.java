@@ -1,17 +1,18 @@
 package com.challenge.disneyworld.models.mappers;
 
 import com.challenge.disneyworld.models.domain.User;
-import com.challenge.disneyworld.models.dto.UserDTO;
+import com.challenge.disneyworld.models.dto.UserDTORegister;
 
 public class UserMapper {
 
-    public static UserDTO UserDomainToDTO(User user){
-        UserDTO dto = null;
+    public static UserDTORegister userDomainToDTO(User user){
+        UserDTORegister dto = null;
         if (user != null){
-            dto = new UserDTO();
+            dto = new UserDTORegister();
             dto.setName(user.getName());
             dto.setEmail(user.getEmail());
             dto.setPassword(user.getPassword());
+            dto.setRole(user.getRole());
         }
         return dto;
     }

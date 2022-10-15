@@ -1,10 +1,13 @@
 package com.challenge.disneyworld.models.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.util.List;
 
+@Schema(name = "Genre-detail")
 public class GenreDTODetail extends GenreDTOBase{
 
-
+    //@Schema(name = "movies")
     private List<ContentDTOBase> contents;
 
     public GenreDTODetail() {

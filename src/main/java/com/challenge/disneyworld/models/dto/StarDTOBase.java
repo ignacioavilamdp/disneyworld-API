@@ -1,7 +1,10 @@
 package com.challenge.disneyworld.models.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.io.Serializable;
 
+@Schema(name = "Character")
 public class StarDTOBase implements Serializable {
 
     private long id;
