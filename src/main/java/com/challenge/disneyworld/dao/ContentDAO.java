@@ -13,7 +13,7 @@ public interface ContentDAO {
     void delete(Content content);
 
     List<Content> getAll();
-    List<Content> search(String title, Integer genreId, Boolean order);
+    List<Content> search(String title, Integer genreId, String order);
     List<Star> getStarsById(Long id);
 
     boolean existsById(long id);

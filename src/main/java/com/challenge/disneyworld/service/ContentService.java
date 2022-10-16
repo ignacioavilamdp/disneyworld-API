@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ContentService {
 
-    List<ContentDTOBase> search(String title, Integer genreId, Boolean order);
+    List<ContentDTOBase> search(String title, Integer genreId, String order);
     List<ContentDTODetail> getAll();
     ContentDTODetail getById(Long id);
     ContentDTODetail updateById(Long id, ContentDTODetail dto);

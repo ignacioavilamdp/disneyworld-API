@@ -48,6 +48,10 @@ Basic Access Authentication is used (HTTP Basic).
 
 ## Important SetUp information
 
+### Server port
+The server port is configured to be 8080. If you have that port already in use, consider 
+modify the application.properties file.
+
 ### Swagger documentation
 The swagger-ui is available at /swagger-ui.html.
 
@@ -78,6 +82,8 @@ Some requirements not implemented yet:
 
     1. Image handling: So far the image is represented as a string.
 
-    2. E-mail sendig when a new user registers.
+    2. E-mail sendig when a new user is registered.
 
-    3. Unit testing with JUnit
+    3. Authentication using a token, for instance jwt. So far authentication is performed with http basic method. 
+
+    4. Unit testing with JUnit
