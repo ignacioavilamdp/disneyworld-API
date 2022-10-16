@@ -30,7 +30,7 @@ public class StarController {
             @RequestParam(name = "name", required = false)  String name,
             @RequestParam(name = "age", required = false)   Short  age,
             @RequestParam(name = "weight", required = false) Float weight,
-            @RequestParam(name = "movie", required = false) Long movieId){
+            @RequestParam(name = "movieId", required = false) Long movieId){
         return ResponseEntity.ok(service.search(name, age, weight, movieId));
     }
 
