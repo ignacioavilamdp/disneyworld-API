@@ -17,7 +17,6 @@ public class ContentDAOImp implements ContentDAO{
 
     @Override
     public List<Content> search(String title, Integer genreId, String order) {
-        System.out.println(order);
         String string = "SELECT cnt FROM Content cnt " +
                 "WHERE  (:title IS NULL OR :title = cnt.title) " +
                 "AND    (:genreId is NULL OR :genreId = cnt.genre.id) " +
