@@ -4,9 +4,7 @@ import com.challenge.disneyworld.models.dto.ContentDTOBase;
 import com.challenge.disneyworld.models.dto.StarDTOBase;
 import com.challenge.disneyworld.models.dto.StarDTODetail;
 import com.challenge.disneyworld.service.StarService;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
-
 
 @RestController
 @RequestMapping("/characters")
@@ -38,8 +35,11 @@ public class StarController {
     }
 
     @Operation(summary = "Add a new character",
-               description = "Adds a new character, including its list of movies. The movies passed " +
-                             "in the movies list must be already included.")
+               description = "Adds a new character, including its list of movies.\n" +
+                             "The movies passed in the list must be already included in the movies section.\n" +
+                             "The name must be available, i.e. there must not be other character with the same name. \n" +
+                             "The id in the payload is not taken into account.\n" +
+                             "The user must be ADMIN")
     @PostMapping
     @Secured("ROLE_ADMIN")
     public ResponseEntity<StarDTODetail> save(@RequestBody StarDTODetail dto) {
@@ -60,7 +60,9 @@ public class StarController {
         return ResponseEntity.ok().body(service.getById(id));
     }
 
-    @Operation(summary = "Delete a character")
+    @Operation(summary = "Delete a character",
+               description = "Deletes a character.\n" +
+                             "The user must be ADMIN")
     @DeleteMapping("/{characterId}")
     @Secured("ROLE_ADMIN")
     public ResponseEntity<String> deleteById(@PathVariable("characterId") Long id){
@@ -68,8 +70,11 @@ public class StarController {
     }
 
     @Operation(summary = "Update a character",
-               description = "Updates a character, including its list of movies. The movies passed " +
-                             "in the movies list must be already included.")
+               description = "Updates a character, including its list of movies.\n" +
+                             "The movies passed in the list must be already included in the movies section.\n" +
+                             "The name must be available, i.e. there must not be other character with the same name. \n" +
+                             "The id in the payload must match the id in the URI.\n" +
+                             "The user must be ADMIN")
     @PutMapping("/{characterId}")
     @Secured("ROLE_ADMIN")
     public ResponseEntity<StarDTODetail> updateById(@PathVariable("characterId") Long id,
@@ -85,7 +90,9 @@ public class StarController {
         return ResponseEntity.ok().body(service.getContentsById(id));
     }
 
-    @Operation(summary = "Add a single movie to a character")
+    @Operation(summary = "Add a single movie to a character",
+               description = "Adds a single movie to a character.\n" +
+                             "The user must be ADMIN.")
     @PostMapping("/{characterId}/movies/{movieId}")
     @Secured("ROLE_ADMIN")
     public ResponseEntity<String> relateContent(@PathVariable("characterId") Long starId,
@@ -94,7 +101,9 @@ public class StarController {
         return ResponseEntity.created(uri).body(service.relateContent(starId, contentId));
     }
 
-    @Operation(summary = "Delete a single movie from a character")
+    @Operation(summary = "Remove a single movie from a character",
+               description = "Removes a single movie from a character.\n" +
+                              "The user must be ADMIN.")
     @DeleteMapping("/{characterId}/movies/{movieId}")
     @Secured("ROLE_ADMIN")
     public ResponseEntity<String> unRelateContent(@PathVariable("characterId") Long starId,

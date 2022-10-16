@@ -15,20 +15,22 @@ public class GlobalExceptionHandler {
                     {NonExistentEntityException.class,
                     NonExistentRelationException.class})
     @ResponseBody
-    public ResponseEntity<ErrorMessage> nonExistentStarExceptionHandler(HttpServletRequest req, RuntimeException ex){
+    public ResponseEntity<ErrorMessage> notFoundExceptionHandler(HttpServletRequest req, RuntimeException ex){
         return new ResponseEntity<>(
                 new ErrorMessage(ex.getMessage(), 1, req.getRequestURI()),
                 HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(
-                    {NoNamePassedException.class,
+                    {MandatoryFieldNotPassedException.class,
                     TryingToModifyIdException.class,
-                    DuplicateNameException.class,
+                    DuplicateUniqueFieldException.class,
                     DuplicateRelationException.class,
-                    DuplicateUserException.class})
+                    DuplicateUserException.class,
+                    InvalidRatingException.class,
+                    InvalidRoleException.class})
     @ResponseBody
-    public ResponseEntity<ErrorMessage> noNamePassedExceptionHandler(HttpServletRequest req, RuntimeException ex){
+    public ResponseEntity<ErrorMessage> badRequestExceptionHandler(HttpServletRequest req, RuntimeException ex){
         return new ResponseEntity<>(
                 new ErrorMessage(ex.getMessage(), 2, req.getRequestURI()),
                 HttpStatus.BAD_REQUEST);

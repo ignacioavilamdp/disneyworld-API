@@ -28,14 +28,19 @@ public class ContentController {
     @GetMapping
     public ResponseEntity<List<ContentDTOBase>> search(
             @RequestParam(name = "title", required = false) String title,
-            @RequestParam(name = "genre", required = false) Integer genreId,
+            @RequestParam(name = "genreId", required = false) Integer genreId,
             @RequestParam(name = "order", required = false) String order){
         return ResponseEntity.ok(service.search(title, genreId, true));
     }
 
     @Operation(summary = "Add a new movie",
-               description = "Adds a new movie, including its list of characters. The characters passed " +
-                             "in the characters list must be already included.")
+               description = "Adds a new movie, including its list of characters.\n" +
+                             "The characters passed in the list must be already included in the characters section.\n" +
+                             "The genre must be already included in the genres section.\n" +
+                             "The title must be available, i.e. there must not be other movie with the same title. \n" +
+                             "The rating must be '1', '2', '3', '4' or '5'.\n" +
+                             "The id in the payload is not taken into account.\n" +
+                             "The user must be ADMIN")
     @PostMapping
     @Secured("ROLE_ADMIN")
     public ResponseEntity<ContentDTODetail> save(@RequestBody ContentDTODetail dto) {
@@ -56,7 +61,9 @@ public class ContentController {
         return ResponseEntity.ok().body(service.getById(id));
     }
 
-    @Operation(summary = "Delete a movie")
+    @Operation(summary = "Delete a movie",
+               description = "Deletes a movie.\n" +
+                             "The user must be ADMIN")
     @DeleteMapping("/{movieId}")
     @Secured("ROLE_ADMIN")
     public ResponseEntity<String> deleteById(@PathVariable("movieId") Long id){
@@ -64,8 +71,13 @@ public class ContentController {
     }
 
     @Operation(summary = "Update a movie",
-               description = "Updates a movie, including its list of characters. The characters passed " +
-                             "in the characters list must be already included.")
+               description = "Updates a movie, including its list of characters.\n" +
+                             "The characters passed in the list must be already included in the characters section.\n" +
+                             "The genre must be already included in the genres section.\n" +
+                             "The title must be available, i.e. there must not be other movie with the same title. \n" +
+                             "The rating must be '1', '2', '3', '4' or '5'.\n" +
+                             "The id in the payload must match the id in the URI.\n" +
+                             "The user must be ADMIN")
     @PutMapping("/{movieId}")
     @Secured("ROLE_ADMIN")
     public ResponseEntity<ContentDTODetail> updateById(@PathVariable("movieId") Long id,
@@ -75,13 +87,15 @@ public class ContentController {
         return ResponseEntity.accepted().location(uri).body(updatedDTO);
     }
 
-    @Operation(summary = "Find characters of a movie")
+    @Operation(summary = "Find all characters that participated in a movie")
     @GetMapping("/{movieId}/characters")
     public ResponseEntity<List<StarDTOBase>> getStars(@PathVariable("movieId") Long id){
         return ResponseEntity.ok().body(service.getStarsById(id));
     }
 
-    @Operation(summary = "Add a single character to a movie")
+    @Operation(summary = "Add a single character to a movie",
+               description = "Adds a single character to a movie.\n" +
+                             "The user must be ADMIN.")
     @PostMapping("/{movieId}/characters/{characterId}")
     @Secured("ROLE_ADMIN")
     public ResponseEntity<String> relateStar(@PathVariable("characterId") Long starId,
@@ -90,7 +104,9 @@ public class ContentController {
         return ResponseEntity.created(uri).body(service.relateStar(starId, contentId));
     }
 
-    @Operation(summary = "Delete a single character from a movie")
+    @Operation(summary = "Remove a single character from a movie",
+               description = "Removes a single character from a movie.\n" +
+                             "The user must be ADMIN.")
     @DeleteMapping("/{movieId}/characters/{characterId}")
     @Secured("ROLE_ADMIN")
     public ResponseEntity<String> unRelateStar(@PathVariable("characterId") Long starId,

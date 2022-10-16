@@ -24,12 +24,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private MyUserDetailsService userDetailsService;
 
-    private static final String[] SWAGGER_AUTH_WHITELIST = {
+    private static final String[] SWAGGER_AUTH = {
             "/swagger-ui.html",
             "/v3/api-docs/**",
             "/swagger-ui/**"
     };
-    private static final String[] H2_AUTH_WHITELIST = {
+    private static final String[] H2_AUTH = {
             "/h2-console/**"
     };
 
@@ -38,17 +38,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.csrf().disable();
         http.authorizeRequests()
-                .antMatchers(SWAGGER_AUTH_WHITELIST).permitAll()
-                .antMatchers(H2_AUTH_WHITELIST).permitAll()
+                .antMatchers(SWAGGER_AUTH).permitAll()
+                .antMatchers(H2_AUTH).permitAll()
                 .antMatchers("/auth/login").permitAll()
-                //.antMatchers("/auth/register").hasAuthority("ROLE_ADMIN")
                 .anyRequest().authenticated();
 
-
+        // HttpBasic authentication
         http.httpBasic();
+
+        // This is to make the h2-console work
+        http.headers().frameOptions().disable();
+
+        // This is to allow logouts
         http.logout().permitAll();
-        //http.formLogin();
-        //http.exceptionHandling().accessDeniedPage("/login");
+
+        // The following is to display the default login page
+        // http.formLogin();
+        // http.exceptionHandling().accessDeniedPage("/login");
     }
 
     @Bean

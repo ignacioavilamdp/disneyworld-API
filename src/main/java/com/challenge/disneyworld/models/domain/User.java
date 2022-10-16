@@ -13,7 +13,7 @@ public class User {
             NAME        VARCHAR(255) NOT NULL UNIQUE,
             EMAIL       VARCHAR(45) NOT NULL UNIQUE,
             PASSWORD    VARCHAR(255) NOT NULL,
-            ROLE        ENUM('ROLE_ADMIN','ROLE_USER),
+            ROLE        ENUM('ROLE_ADMIN','ROLE_USER) NOT NULL,
             CONSTRAINT  PK_USER PRIMARY KEY(ID)
         );
      */
@@ -30,9 +30,6 @@ public class User {
     private String password;
     @Column(name = "ROLE")
     private String role;
-
-    public User() {
-    }
 
     public long getId() {
         return id;

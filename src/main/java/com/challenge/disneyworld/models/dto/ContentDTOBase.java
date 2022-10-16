@@ -12,9 +12,6 @@ public class ContentDTOBase {
     private String image;
     private LocalDate date;
 
-    public ContentDTOBase() {
-    }
-
     public long getId() {
         return id;
     }

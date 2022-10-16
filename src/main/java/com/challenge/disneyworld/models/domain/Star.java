@@ -41,19 +41,6 @@ public class Star {
     )
     List<Content> contents = new ArrayList<>();
 
-    public Star() {
-    }
-
-    public Star copy(Star other){
-        this.id = other.id;
-        this.name = other.name;
-        this.age = other.age;
-        this.weight = other.weight;
-        this.image = other.image;
-        this.history = other.history;
-        this.contents = other.contents;
-        return this;
-    }
 
     public long getId() {
         return id;

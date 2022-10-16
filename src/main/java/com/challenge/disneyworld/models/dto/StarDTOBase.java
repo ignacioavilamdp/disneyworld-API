@@ -11,9 +11,6 @@ public class StarDTOBase implements Serializable {
     private String name;
     private String image;
 
-    public StarDTOBase() {
-    }
-
     public long getId() {
         return id;
     }

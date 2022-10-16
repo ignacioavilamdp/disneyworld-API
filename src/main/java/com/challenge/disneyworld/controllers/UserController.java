@@ -21,7 +21,9 @@ public class UserController {
     @Autowired
     UserService service;
 
-    @Operation(summary = "Obtain a detailed list of all users")
+    @Operation(summary = "Obtain a detailed list of all users",
+               description = "Obtains a detailed list of all users, including its hashed passwords.\n" +
+                             "The user must be ADMIN")
     @GetMapping
     @Secured("ROLE_ADMIN")
     @SecurityRequirement(name = "DisneyAPI")
@@ -29,7 +31,13 @@ public class UserController {
         return ResponseEntity.ok().body(service.getAll());
     }
 
-    @Operation(summary = "Register a new user")
+    @Operation(summary = "Register a new user",
+              description = "Registers a new user.\n" +
+                            "The name must be available, i.e. there must not be other user with the same name. \n" +
+                            "The email address must be available, i.e. there must not be other user with the same email address. \n" +
+                            "The available roles are 'ROLE_USER' and 'ROLE_ADMIN'.\n" +
+                            "The user must be ADMIN.")
+
     @PostMapping("/register")
     @Secured("ROLE_ADMIN")
     @SecurityRequirement(name = "DisneyAPI")

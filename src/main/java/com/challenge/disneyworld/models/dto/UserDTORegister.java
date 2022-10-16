@@ -9,9 +9,6 @@ public class UserDTORegister {
     private String password;
     private String role;
 
-    public UserDTORegister() {
-    }
-
     public String getName() {
         return name;
     }

@@ -10,11 +10,8 @@ public class StarDTODetail extends StarDTOBase{
     private short age;
     private float weight;
     private String history;
-    //@Schema(name = "movies")
+    @Schema(name = "movies")
     private List<String> contents;
-
-    public StarDTODetail() {
-    }
 
     public short getAge() {
         return age;

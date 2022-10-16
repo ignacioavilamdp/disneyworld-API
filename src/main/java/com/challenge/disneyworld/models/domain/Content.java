@@ -14,7 +14,7 @@ public class Content {
            ID          BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY,
            TITLE       VARCHAR(60) NOT NULL UNIQUE,
            CDATE       DATE,
-           RATING      ENUM('1','2','3','4','5'),
+           RATING      ENUM('1','2','3','4','5') NOT NULL,
            IMAGE       VARCHAR(45),
            GENRE_ID    INT,
            CONSTRAINT  PK_CONTENT PRIMARY KEY(ID),
@@ -40,18 +40,6 @@ public class Content {
     @ManyToMany(mappedBy = "contents")
     private List<Star> stars = new ArrayList<>();
 
-    public Content() {
-    }
-
-    public Content copy(Content other){
-        this.id = other.id;
-        this.title = other.title;
-        this.date = other.date;
-        this.rating = other.rating;
-        this.image = other.image;
-        this.genre = other.genre;
-        return this;
-    }
 
     public long getId() {
         return id;

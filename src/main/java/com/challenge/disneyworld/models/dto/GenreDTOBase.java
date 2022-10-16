@@ -9,9 +9,6 @@ public class GenreDTOBase {
     private String name;
     private String image;
 
-    public GenreDTOBase() {
-    }
-
     public int getId() {
         return id;
     }

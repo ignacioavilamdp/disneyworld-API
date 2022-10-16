@@ -23,13 +23,13 @@ public class GenreController {
     @Autowired
     private GenreService service;
 
-    @Operation(summary = "Obtain a list of genres")
+    @Operation(summary = "Obtain a list available of genres")
     @GetMapping()
     public ResponseEntity<List<GenreDTOBase>> getAllBase() {
         return ResponseEntity.ok().body(service.getAllBase());
     }
 
-    @Operation(summary = "Obtain a detailed list of all genres")
+    @Operation(summary = "Obtain a detailed list of all available genres")
     @GetMapping("/detail")
     public ResponseEntity<List<GenreDTODetail>> getAllDetail() {
         return ResponseEntity.ok().body(service.getAllDetail());

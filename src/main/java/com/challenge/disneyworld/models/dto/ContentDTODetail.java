@@ -9,11 +9,8 @@ public class ContentDTODetail extends ContentDTOBase{
 
     private String rating;
     private String genre;
-    //@Schema(name = "characters")
+    @Schema(name = "characters")
     private List<String> stars;
-
-    public ContentDTODetail() {
-    }
 
     public String getRating() {
         return rating;
