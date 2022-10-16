@@ -28,7 +28,8 @@ public class GlobalExceptionHandler {
                     DuplicateRelationException.class,
                     DuplicateUserException.class,
                     InvalidRatingException.class,
-                    InvalidRoleException.class})
+                    InvalidRoleException.class,
+                    InvalidOrderCriteriaException.class})
     @ResponseBody
     public ResponseEntity<ErrorMessage> badRequestExceptionHandler(HttpServletRequest req, RuntimeException ex){
         return new ResponseEntity<>(

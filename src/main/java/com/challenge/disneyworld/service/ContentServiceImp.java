@@ -34,7 +34,10 @@ public class ContentServiceImp implements ContentService{
 
     @Override
     @Transactional(readOnly = true)
-    public List<ContentDTOBase> search(String title, Integer genreId, Boolean order){
+    public List<ContentDTOBase> search(String title, Integer genreId, String order){
+        if (order != null && !order.equals("ASC") && !order.equals("DESC")){
+            throw new InvalidOrderCriteriaException("Invalid order criteria.");
+        }
         return contentDAO.search(title, genreId, order).
                 stream().
                 map(content -> ContentMapper.domainToDTOBase(content)).

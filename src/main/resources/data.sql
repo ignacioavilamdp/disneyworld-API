@@ -71,12 +71,12 @@ VALUES
         6),
 
 		('Three little birds',
-		DATE '2022-08-11',
+		DATE '2022-5-15',
         '5',
         11),
 
 	 	('Queen',
-		DATE '1955-11-13',
+		DATE '1955-02-06',
         '2',
         6);
 		
@@ -87,7 +87,11 @@ INSERT INTO STAR_CONTENT
         CONTENT_ID)
 VALUES 	(2, 1),
 	    (5, 1),
-		(2, 2);
+		(2, 2),
+		(1, 3),
+		(1, 4),
+		(2, 4),
+		(3, 4);
 
 
 --USER

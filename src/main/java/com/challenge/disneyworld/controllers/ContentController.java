@@ -24,13 +24,16 @@ public class ContentController {
     @Autowired
     private ContentService service;
 
-    @Operation(summary = "Search a movie")
+    @Operation(summary = "Search a movie",
+               description = "Movies will be ordered in a lexicographical fashion by title.\n" +
+                             "If order criteria is not present, the movies will be presented in ascending order.\n" +
+                             "If order criteria is present, then it must be 'ASC' or 'DESC' (case sensitive).")
     @GetMapping
     public ResponseEntity<List<ContentDTOBase>> search(
             @RequestParam(name = "title", required = false) String title,
             @RequestParam(name = "genreId", required = false) Integer genreId,
-            @RequestParam(name = "order", required = false) String order){
-        return ResponseEntity.ok(service.search(title, genreId, true));
+            @RequestParam(name = "orderCriteria", required = false) String order){
+        return ResponseEntity.ok(service.search(title, genreId, order));
     }
 
     @Operation(summary = "Add a new movie",

@@ -16,10 +16,13 @@ public class ContentDAOImp implements ContentDAO{
     private EntityManager em;
 
     @Override
-    public List<Content> search(String title, Integer genreId, Boolean order) {
+    public List<Content> search(String title, Integer genreId, String order) {
         String string = "SELECT cnt FROM Content cnt " +
-                "WHERE  (:title IS NULL OR :title = cnt.title)" +
-                "AND    (:genreId is NULL OR :genreId = cnt.genre.id)";
+                "WHERE  (:title IS NULL OR :title = cnt.title) " +
+                "AND    (:genreId is NULL OR :genreId = cnt.genre.id) " +
+                "ORDER BY cnt.title ";
+        if (order != null)
+            string += order;
         TypedQuery<Content> query = em.createQuery(string, Content.class);
         query.setParameter("title", title);
         query.setParameter("genreId", genreId);
