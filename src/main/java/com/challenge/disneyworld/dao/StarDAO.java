@@ -95,7 +95,7 @@ public interface StarDAO {
      * @return a list containing all contents related to the star. If there is
      * no content related, then the list will be empty.
      */
-    List<Content> getContentsById(Long id);
+    List<Content> getContentsById(long id);
 
     /**
      * Returns whether a star with the given id exists.

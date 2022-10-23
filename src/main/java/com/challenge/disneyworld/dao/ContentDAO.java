@@ -108,7 +108,7 @@ public interface ContentDAO {
      * @return a list containing all stars related to the content. If there is
      * no star related, then the list will be empty.
      */
-    List<Star> getStarsById(Long id);
+    List<Star> getStarsById(long id);
 
     /**
      * Returns whether a content with the given id exists.

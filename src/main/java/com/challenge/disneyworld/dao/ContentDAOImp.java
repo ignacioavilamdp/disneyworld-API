@@ -75,7 +75,7 @@ public class ContentDAOImp implements ContentDAO{
     }
 
     @Override
-    public List<Star> getStarsById(Long id) {
+    public List<Star> getStarsById(long id) {
         String string = "SELECT DISTINCT st FROM Star st " +
                 "LEFT OUTER JOIN st.contents content " +
                 "WHERE content.id = :id";
