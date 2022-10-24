@@ -87,17 +87,6 @@ public interface StarDAO {
     List<Star> search(String name, Short age, Float weight, Long movieId);
 
     /**
-     * Retrieves a list of all contents related to a star by its id.
-     *
-     * <p>Precondition: There must be a star with the given id in the storage.
-     *
-     * @param id the star id.
-     * @return a list containing all contents related to the star. If there is
-     * no content related, then the list will be empty.
-     */
-    List<Content> getContentsById(long id);
-
-    /**
      * Returns whether a star with the given id exists.
      *
      * @param id the star id

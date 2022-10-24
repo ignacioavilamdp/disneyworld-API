@@ -9,6 +9,9 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.util.List;
 
+/**
+ * Implementation of {@link StarDAO} using JPA.
+ */
 @Component
 public class StarDAOImp implements StarDAO{
 
@@ -75,16 +78,6 @@ public class StarDAOImp implements StarDAO{
     @Override
     public void delete(Star star) {
         em.remove(star);
-    }
-
-    @Override
-    public List<Content> getContentsById(long id) {
-        String string = "SELECT DISTINCT cnt FROM Content cnt " +
-                "LEFT OUTER JOIN cnt.stars star " +
-                "WHERE star.id = :id";
-        TypedQuery<Content> query = em.createQuery(string, Content.class);
-        query.setParameter("id", id);
-        return query.getResultList();
     }
 
 }

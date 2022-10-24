@@ -17,6 +17,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Implementation of {@link StarService} using {@link ContentDAO} and
+ * {@link StarDAO} instances.
+ */
 @Component
 public class StarServiceImp implements StarService{
 
@@ -167,10 +171,11 @@ public class StarServiceImp implements StarService{
             throw new InvalidIdException("No id passed");
         }
 
-        if (!starDAO.existsById(id))
+        Star star = starDAO.getById(id);
+        if (star == null)
             throw new NonExistentEntityException("There is no character with that ID.");
 
-        return starDAO.getContentsById(id).
+        return star.getContents().
                 stream().
                 map(content -> ContentMapper.domainToDTOBase(content)).
                 collect(Collectors.toList());
