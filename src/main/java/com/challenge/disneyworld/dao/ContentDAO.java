@@ -2,6 +2,7 @@ package com.challenge.disneyworld.dao;
 
 import com.challenge.disneyworld.models.domain.Content;
 import com.challenge.disneyworld.models.domain.Star;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -97,18 +98,6 @@ public interface ContentDAO {
      * then the list will be empty.
      */
     List<Content> search(String title, Integer genreId, String order);
-
-    /**
-     * Retrieves a list of all stars related to a content by its id.
-     *
-     * <p>Precondition: There must exist a content with the given id in the
-     * storage.
-     *
-     * @param id the content id.
-     * @return a list containing all stars related to the content. If there is
-     * no star related, then the list will be empty.
-     */
-    List<Star> getStarsById(long id);
 
     /**
      * Returns whether a content with the given id exists.

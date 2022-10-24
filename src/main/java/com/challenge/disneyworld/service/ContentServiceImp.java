@@ -3,7 +3,10 @@ package com.challenge.disneyworld.service;
 import com.challenge.disneyworld.dao.ContentDAO;
 import com.challenge.disneyworld.dao.GenreDAO;
 import com.challenge.disneyworld.dao.StarDAO;
-import com.challenge.disneyworld.exceptions.*;
+import com.challenge.disneyworld.exceptions.InvalidDTOException;
+import com.challenge.disneyworld.exceptions.InvalidIdException;
+import com.challenge.disneyworld.exceptions.InvalidOrderCriteriaException;
+import com.challenge.disneyworld.exceptions.NonExistentEntityException;
 import com.challenge.disneyworld.models.domain.Content;
 import com.challenge.disneyworld.models.domain.Genre;
 import com.challenge.disneyworld.models.domain.Rating;
@@ -20,6 +23,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Implementation of {@link ContentService} using {@link ContentDAO},
+ * {@link StarDAO} and {@link GenreDAO} instances.
+ */
 @Component
 public class ContentServiceImp implements ContentService{
 
@@ -155,10 +162,11 @@ public class ContentServiceImp implements ContentService{
             throw new InvalidIdException("No id passed");
         }
 
-        if (!contentDAO.existsById(id))
+        Content content = contentDAO.getById(id);
+        if (content == null)
             throw new NonExistentEntityException("There is no movie with ID: " + id);
 
-        return contentDAO.getStarsById(id).
+        return content.getStars().
                 stream().
                 map(star -> StarMapper.domainToDTOBase(star)).
                 collect(Collectors.toList());
