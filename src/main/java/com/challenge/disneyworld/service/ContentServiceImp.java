@@ -34,7 +34,7 @@ public class ContentServiceImp implements ContentService{
 
     @Override
     @Transactional(readOnly = true)
-    public List<ContentDTOBase> search(String title, Integer genreId, String order){
+    public List<ContentDTOBase> search(String title, Integer genreId, String order) {
         if (order != null && !order.equals("ASC") && !order.equals("DESC")){
             throw new InvalidOrderCriteriaException("Invalid order criteria.");
         }
@@ -56,6 +56,10 @@ public class ContentServiceImp implements ContentService{
     @Override
     @Transactional(readOnly = true)
     public ContentDTODetail getById(Long id){
+        if (id == null){
+            throw new InvalidIdException("No id passed");
+        }
+
         Content content = contentDAO.getById(id);
         if (content == null)
             throw new NonExistentEntityException("There is no movie with ID: " + id);
@@ -66,8 +70,12 @@ public class ContentServiceImp implements ContentService{
     @Override
     @Transactional
     public String deleteById(Long id) {
+        if (id == null){
+            throw new InvalidIdException("No id passed");
+        }
+
         Content content = contentDAO.getById(id);
-        if ( content == null )
+        if (content == null)
             throw new NonExistentEntityException("There is no movie with ID: " + id);
 
         contentDAO.delete(content);
@@ -77,27 +85,31 @@ public class ContentServiceImp implements ContentService{
     @Override
     @Transactional
     public ContentDTODetail updateById(Long id, ContentDTODetail dto){
-        if (id != dto.getId())
-            throw new TryingToModifyIdException("The id in the payload does not match the id in the URI. " +
-                    "Are you trying to modify the id? This is not allowed.");
-
-        if (dto.getTitle() == null)
-            throw new MandatoryFieldNotPassedException("No title passed. Title is mandatory.");
-
-        if (dto.getRating() == null)
-            throw new MandatoryFieldNotPassedException("No rating passed. Rating is mandatory.");
+        if (id == null){
+            throw new InvalidIdException("No id passed");
+        }
 
         Content contentById = contentDAO.getById(dto.getId());
         if (contentById == null)
             throw new NonExistentEntityException("There is no movie with ID: " + id);
 
-        Content contentByTitle = contentDAO.getByTitle(dto.getTitle());
-        if (contentByTitle != null && contentByTitle.getId() != contentById.getId())
-            throw new DuplicateUniqueFieldException("There is already a movie with the same title (" + dto.getTitle() + "). No duplicates allowed");
+        if (id != dto.getId())
+            throw new InvalidDTOException("The id in the payload does not match the id in the URI. " +
+                    "Are you trying to modify the id? This is not allowed.");
+
+        if (dto.getTitle() == null)
+            throw new InvalidDTOException("No title passed. Title is mandatory.");
+
+        if (dto.getRating() == null)
+            throw new InvalidDTOException("No rating passed. Rating is mandatory.");
 
         if ( !isValidRating(dto.getRating()) ){
-            throw new InvalidRatingException("Invalid rating");
+            throw new InvalidDTOException("Invalid rating");
         }
+
+        Content contentByTitle = contentDAO.getByTitle(dto.getTitle());
+        if (contentByTitle != null && contentByTitle.getId() != contentById.getId())
+            throw new InvalidDTOException("There is already a movie with the same title (" + dto.getTitle() + "). No duplicates allowed");
 
         modifyEntityFromDTO(contentById, dto);
         return ContentMapper.domainToDTODetail(contentById);
@@ -107,16 +119,16 @@ public class ContentServiceImp implements ContentService{
     @Transactional
     public ContentDTODetail save(ContentDTODetail dto) {
         if (dto.getTitle() == null)
-            throw new MandatoryFieldNotPassedException("No title passed. Title is mandatory.");
+            throw new InvalidDTOException("No title passed. Title is mandatory.");
 
         if (dto.getRating() == null)
-            throw new MandatoryFieldNotPassedException("No rating passed. Rating is mandatory.");
+            throw new InvalidDTOException("No rating passed. Rating is mandatory.");
 
         if (contentDAO.existsByTitle(dto.getTitle()))
-            throw new DuplicateUniqueFieldException("There is already a movie with the same title (" + dto.getTitle() + "). No duplicates allowed");
+            throw new InvalidDTOException("There is already a movie with the same title (" + dto.getTitle() + "). No duplicates allowed");
 
         if ( !isValidRating(dto.getRating()) ){
-            throw new InvalidRatingException("Invalid rating");
+            throw new InvalidDTOException("Invalid rating");
         }
 
         Content content = new Content();
@@ -139,6 +151,10 @@ public class ContentServiceImp implements ContentService{
     @Override
     @Transactional(readOnly = true)
     public List<StarDTOBase> getStarsById(Long id) {
+        if (id == null){
+            throw new InvalidIdException("No id passed");
+        }
+
         if (!contentDAO.existsById(id))
             throw new NonExistentEntityException("There is no movie with ID: " + id);
 
@@ -159,7 +175,7 @@ public class ContentServiceImp implements ContentService{
          */
         Genre genre = genreDAO.getByName(dto.getGenre());
         if (genre == null)
-            throw new NonExistentEntityException("There is no genre named: " + dto.getGenre());
+            throw new InvalidDTOException("There is no genre named: " + dto.getGenre());
         content.setGenre(genre);
 
         /*
@@ -180,7 +196,7 @@ public class ContentServiceImp implements ContentService{
         for (String starName : dto.getStars()){
             Star star = starDAO.getByName(starName);
             if (star == null)
-                throw new NonExistentEntityException("There is no character with name: " + starName + ". Please, add the character first.");
+                throw new InvalidDTOException("There is no character with name: " + starName + ". Please, add the character first.");
             star.getContents().add(content);
             content.getStars().add(star);
         }

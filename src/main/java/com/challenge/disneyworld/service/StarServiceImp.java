@@ -46,6 +46,10 @@ public class StarServiceImp implements StarService{
     @Override
     @Transactional(readOnly = true)
     public StarDTODetail getById(Long id){
+        if (id == null){
+            throw new InvalidIdException("No id passed");
+        }
+
         Star star = starDAO.getById(id);
         if (star == null)
             throw new NonExistentEntityException("There is no character with ID: " + id);
@@ -67,20 +71,24 @@ public class StarServiceImp implements StarService{
     @Override
     @Transactional
     public StarDTODetail updateById(Long id, StarDTODetail dto){
-        if (id != dto.getId())
-            throw new TryingToModifyIdException("The id in the payload does not match the id in the URI. " +
-                    "Are you trying to modify the id? This is not allowed.");
-
-        if (dto.getName() == null)
-            throw new MandatoryFieldNotPassedException("No name passed. Name is mandatory.");
+        if (id == null){
+            throw new InvalidIdException("No id passed");
+        }
 
         Star starById = starDAO.getById(dto.getId());
         if (starById == null)
             throw new NonExistentEntityException("There is no character with ID: " + id);
 
+        if (id != dto.getId())
+            throw new InvalidDTOException("The id in the payload does not match the id in the URI. " +
+                    "Are you trying to modify the id? This is not allowed.");
+
+        if (dto.getName() == null)
+            throw new InvalidDTOException("No name passed. Name is mandatory.");
+
         Star starByName = starDAO.getByName(dto.getName());
         if (starByName != null && starByName.getId() != starById.getId())
-            throw new DuplicateUniqueFieldException("There is already a character with the same name (" + dto.getName() + "). No duplicates allowed.");
+            throw new InvalidDTOException("There is already a character with the same name (" + dto.getName() + "). No duplicates allowed.");
 
         modifyEntityFromDTO(starById, dto);
         return StarMapper.domainToDTODetail(starById);
@@ -90,10 +98,10 @@ public class StarServiceImp implements StarService{
     @Transactional
     public StarDTODetail save(StarDTODetail dto) {
         if (dto.getName() == null)
-            throw new MandatoryFieldNotPassedException("No name passed. Name is mandatory.");
+            throw new InvalidDTOException("No name passed. Name is mandatory.");
 
         if (starDAO.existsByName(dto.getName()))
-            throw new DuplicateUniqueFieldException("There is already a character with the same name (" + dto.getName() + "). No duplicates allowed");
+            throw new InvalidDTOException("There is already a character with the same name (" + dto.getName() + "). No duplicates allowed");
 
         Star star = new Star();
         modifyEntityFromDTO(star, dto);
@@ -103,12 +111,19 @@ public class StarServiceImp implements StarService{
     @Override
     @Transactional
     public String relateContent(Long starId, Long contentId) {
-        Star star = starDAO.getById(starId);
-        Content content = contentDao.getById(contentId);
+        if (starId == null){
+            throw new InvalidIdException("No character id passed");
+        }
 
+        if (contentId == null){
+            throw new InvalidIdException("No content id passed");
+        }
+
+        Star star = starDAO.getById(starId);
         if (star == null)
             throw new NonExistentEntityException("There is no character with that ID: " + starId);
 
+        Content content = contentDao.getById(contentId);
         if (content == null)
             throw new NonExistentEntityException("There is no content with that ID: " + contentId);
 
@@ -122,12 +137,19 @@ public class StarServiceImp implements StarService{
     @Override
     @Transactional
     public String unRelateContent(Long starId, Long contentId) {
-        Star star = starDAO.getById(starId);
-        Content content = contentDao.getById(contentId);
+        if (starId == null){
+            throw new InvalidIdException("No character id passed");
+        }
 
+        if (contentId == null){
+            throw new InvalidIdException("No content id passed");
+        }
+
+        Star star = starDAO.getById(starId);
         if (star == null)
             throw new NonExistentEntityException("There is no character with that ID: " + starId);
 
+        Content content = contentDao.getById(contentId);
         if (content == null)
             throw new NonExistentEntityException("There is no content with that ID: " + contentId);
 
@@ -141,6 +163,10 @@ public class StarServiceImp implements StarService{
     @Override
     @Transactional(readOnly = true)
     public List<ContentDTOBase> getContentsById(Long id) {
+        if (id == null){
+            throw new InvalidIdException("No id passed");
+        }
+
         if (!starDAO.existsById(id))
             throw new NonExistentEntityException("There is no character with that ID.");
 
@@ -165,7 +191,7 @@ public class StarServiceImp implements StarService{
         for (String contentTitle : dto.getContents()){
             Content content = contentDao.getByTitle(contentTitle);
             if (content == null)
-                throw new NonExistentEntityException("There is no movie with title: " + contentTitle + ". Please, add the movie first.");
+                throw new InvalidDTOException("There is no movie with title: " + contentTitle + ". Please, add the movie first.");
             star.getContents().add(content);
         }
     }
