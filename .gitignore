@@ -32,6 +32,5 @@ build/
 ### VS Code ###
 .vscode/
 
-
 ### Doc ###
-!**/src/main/docs/
+/src/main/docs/
