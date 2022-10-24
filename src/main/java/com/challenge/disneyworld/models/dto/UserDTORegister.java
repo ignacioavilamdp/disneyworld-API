@@ -2,6 +2,10 @@ package com.challenge.disneyworld.models.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+/**
+ * A Data Transfer Object (DTO) of a
+ * {@link com.challenge.disneyworld.models.domain.User} for registration purposes.
+ */
 @Schema(name = "User-register")
 public class UserDTORegister {
     private String name;

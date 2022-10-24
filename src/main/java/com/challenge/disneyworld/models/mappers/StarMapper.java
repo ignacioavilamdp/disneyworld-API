@@ -8,6 +8,10 @@ import com.challenge.disneyworld.models.dto.StarDTODetail;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A class that provide static methods to map from {@link Star} to
+ * {@link StarDTOBase} or {@link StarDTODetail}
+ */
 public class StarMapper {
 
     public static StarDTOBase domainToDTOBase(Star star){

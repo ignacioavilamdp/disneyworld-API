@@ -18,6 +18,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Implementation of {@link UserService} using a {@link UserDAO}
+ * instance.
+ */
 @Component
 public class UserServiceImp implements UserService{
 

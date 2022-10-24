@@ -8,6 +8,9 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.util.List;
 
+/**
+ * Implementation of {@link GenreDAO} using JPA.
+ */
 @Component
 public class GenreDAOImp implements GenreDAO{
 

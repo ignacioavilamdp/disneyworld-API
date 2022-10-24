@@ -2,6 +2,10 @@ package com.challenge.disneyworld.models.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+/**
+ * A base Data Transfer Object (DTO) of a
+ * {@link com.challenge.disneyworld.models.domain.Genre}
+ */
 @Schema(name = "Genre")
 public class GenreDTOBase {
 

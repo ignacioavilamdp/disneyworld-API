@@ -1,23 +1,14 @@
 package com.challenge.disneyworld.models.domain;
 
 import javax.persistence.*;
-import java.util.List;
 
+/**
+ * Domain class to represent a User.
+ * Also serves as an entity for database persistence purposes using an ORM provider.
+ */
 @Entity
 @Table(name = "APPUSER")
 public class User {
-    /*
-        CREATE TABLE APPUSER
-        (
-            ID          BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY,
-            NAME        VARCHAR(255) NOT NULL UNIQUE,
-            EMAIL       VARCHAR(45) NOT NULL UNIQUE,
-            PASSWORD    VARCHAR(255) NOT NULL,
-            ROLE        ENUM('ROLE_ADMIN','ROLE_USER) NOT NULL,
-            CONSTRAINT  PK_USER PRIMARY KEY(ID)
-        );
-     */
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")

@@ -5,23 +5,13 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Domain class to represent a Content (movie or show).
+ * Also serves as an entity for database persistence purposes using an ORM provider.
+ */
 @Entity
 @Table(name = "CONTENT")
 public class Content {
-    /*
-        CREATE TABLE CONTENT
-        (
-           ID          BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY,
-           TITLE       VARCHAR(60) NOT NULL UNIQUE,
-           CDATE       DATE,
-           RATING      ENUM('1','2','3','4','5') NOT NULL,
-           IMAGE       VARCHAR(45),
-           GENRE_ID    INT,
-           CONSTRAINT  PK_CONTENT PRIMARY KEY(ID),
-           CONSTRAINT  FK_GENRE FOREIGN KEY(GENRE_ID) REFERENCES GENRE(ID) ON DELETE CASCADE ON UPDATE CASCADE
-        );
-    */
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="ID")
@@ -39,7 +29,6 @@ public class Content {
     private Genre genre;
     @ManyToMany(mappedBy = "contents")
     private List<Star> stars = new ArrayList<>();
-
 
     public long getId() {
         return id;

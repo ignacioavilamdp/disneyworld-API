@@ -6,6 +6,10 @@ import com.challenge.disneyworld.models.dto.GenreDTODetail;
 
 import java.util.stream.Collectors;
 
+/**
+ * A class that provide static methods to map from {@link Genre} to
+ * {@link GenreDTOBase} or {@link GenreDTODetail}
+ */
 public class GenreMapper {
 
     public static GenreDTOBase domainToDTOBase(Genre genre){

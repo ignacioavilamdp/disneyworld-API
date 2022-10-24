@@ -4,6 +4,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.io.Serializable;
 
+/**
+ * A base Data Transfer Object (DTO) of a
+ * {@link com.challenge.disneyworld.models.domain.Star}
+ */
 @Schema(name = "Character")
 public class StarDTOBase implements Serializable {
 

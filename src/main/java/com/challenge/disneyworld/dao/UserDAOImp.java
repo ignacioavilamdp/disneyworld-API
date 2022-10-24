@@ -1,6 +1,5 @@
 package com.challenge.disneyworld.dao;
 
-import com.challenge.disneyworld.models.domain.Star;
 import com.challenge.disneyworld.models.domain.User;
 import org.springframework.stereotype.Component;
 
@@ -9,6 +8,9 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.util.List;
 
+/**
+ * Implementation of {@link UserDAO} using JPA.
+ */
 @Component
 public class UserDAOImp implements UserDAO {
 

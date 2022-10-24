@@ -3,6 +3,10 @@ package com.challenge.disneyworld.models.mappers;
 import com.challenge.disneyworld.models.domain.User;
 import com.challenge.disneyworld.models.dto.UserDTORegister;
 
+/**
+ * A class that provide static methods to map from {@link User} to
+ * {@link UserDTORegister}
+ */
 public class UserMapper {
 
     public static UserDTORegister domainToDTO(User user){
