@@ -2,14 +2,15 @@ package com.challenge.disneyworld.models.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 /**
- * A base Data Transfer Object (DTO) of a
+ * A basic Data Transfer Object (DTO) of a
  * {@link com.challenge.disneyworld.models.domain.Content}
  */
 @Schema(name = "Movie")
-public class ContentBaseDTO {
+public class ContentBaseDTO implements Serializable {
 
     private long id;
     private String title;
