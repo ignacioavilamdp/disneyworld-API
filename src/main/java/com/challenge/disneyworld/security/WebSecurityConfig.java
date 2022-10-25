@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -51,6 +52,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         // This is to allow logouts
         http.logout().permitAll();
+
+        // This is to make the session stateless.
+        // I experienced that without this config, the server sends a set-cookie response
+        // to the client.
+        // Then, in subsequent calls the client uses this cookie to "authenticate", making
+        // pointless the "authorization" header in the request.
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         // The following is to display the default login page
         // http.formLogin();
