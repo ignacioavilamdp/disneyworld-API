@@ -4,7 +4,7 @@ import com.challenge.disneyworld.models.domain.User;
 import com.challenge.disneyworld.models.dto.UserDTORegister;
 
 /**
- * A class that provide static methods to map from {@link User} to
+ * A class that provides static methods to map from {@link User} to
  * {@link UserDTORegister}
  */
 public class UserMapper {

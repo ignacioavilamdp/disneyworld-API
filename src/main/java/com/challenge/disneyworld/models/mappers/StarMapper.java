@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A class that provide static methods to map from {@link Star} to
+ * A class that provides static methods to map from {@link Star} to
  * {@link StarDTOBase} or {@link StarDTODetail}
  */
 public class StarMapper {

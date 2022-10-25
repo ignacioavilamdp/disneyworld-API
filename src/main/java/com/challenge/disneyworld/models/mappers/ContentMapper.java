@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A class that provide static methods to map from {@link Content} to
+ * A class that provides static methods to map from {@link Content} to
  * {@link ContentDTOBase} or {@link ContentDTODetail}
  */
 public class ContentMapper {
