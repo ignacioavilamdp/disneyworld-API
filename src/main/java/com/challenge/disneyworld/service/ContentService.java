@@ -1,9 +1,9 @@
 package com.challenge.disneyworld.service;
 
 import com.challenge.disneyworld.exceptions.*;
-import com.challenge.disneyworld.models.dto.ContentDTOBase;
-import com.challenge.disneyworld.models.dto.ContentDTODetail;
-import com.challenge.disneyworld.models.dto.StarDTOBase;
+import com.challenge.disneyworld.models.dto.ContentBaseDTO;
+import com.challenge.disneyworld.models.dto.ContentDetailDTO;
+import com.challenge.disneyworld.models.dto.StarBaseDTO;
 
 import java.util.List;
 
@@ -29,14 +29,14 @@ public interface ContentService {
      * @throws InvalidOrderCriteriaException if the order parameter is
      * different from 'ASC', 'DESC' or null.
      */
-    List<ContentDTOBase> search(String title, Integer genreId, String order);
+    List<ContentBaseDTO> search(String title, Integer genreId, String order);
 
     /**
      * Retrieves a list of all contents.
      *
      * @return a list of all contents as detailed DTO's.
      */
-    List<ContentDTODetail> getAll();
+    List<ContentDetailDTO> getAll();
 
     /**
      * Retrieves a content by its id.
@@ -46,7 +46,7 @@ public interface ContentService {
      * @throws InvalidIdException if id is null.
      * @throws NonExistentEntityException if there is no movie with the given id.
      */
-    ContentDTODetail getById(Long id);
+    ContentDetailDTO getById(Long id);
 
     /**
      * Updates the content instance with the given id using the data contained
@@ -69,7 +69,7 @@ public interface ContentService {
      * there is no genre with the given genre name, some character in the
      * characters list does not exist.
      */
-    ContentDTODetail updateById(Long id, ContentDTODetail dto);
+    ContentDetailDTO updateById(Long id, ContentDetailDTO dto);
 
     /**
      * Creates and saves a new content instance into the underlying storage
@@ -86,7 +86,7 @@ public interface ContentService {
      * movie with the same title, there is no genre with the given genre name,
      * some character in the characters list does not exist.
      */
-    ContentDTODetail save(ContentDTODetail dto);
+    ContentDetailDTO save(ContentDetailDTO dto);
 
     /**
      * Deletes the content instance with the given id.
@@ -147,5 +147,5 @@ public interface ContentService {
      * @throws InvalidIdException if the given id is null.
      * @throws NonExistentEntityException if there is no movie with the given id.
      */
-    List<StarDTOBase> getStarsById(Long id);
+    List<StarBaseDTO> getStarsById(Long id);
 }

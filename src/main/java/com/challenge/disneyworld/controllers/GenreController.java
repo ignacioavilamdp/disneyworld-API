@@ -1,7 +1,7 @@
 package com.challenge.disneyworld.controllers;
 
-import com.challenge.disneyworld.models.dto.GenreDTOBase;
-import com.challenge.disneyworld.models.dto.GenreDTODetail;
+import com.challenge.disneyworld.models.dto.GenreBaseDTO;
+import com.challenge.disneyworld.models.dto.GenreDetailDTO;
 import com.challenge.disneyworld.service.GenreService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -25,13 +25,13 @@ public class GenreController {
 
     @Operation(summary = "Obtain a list available of genres")
     @GetMapping()
-    public ResponseEntity<List<GenreDTOBase>> getAllBase() {
+    public ResponseEntity<List<GenreBaseDTO>> getAllBase() {
         return ResponseEntity.ok().body(service.getAllBase());
     }
 
     @Operation(summary = "Obtain a detailed list of all available genres")
     @GetMapping("/detail")
-    public ResponseEntity<List<GenreDTODetail>> getAllDetail() {
+    public ResponseEntity<List<GenreDetailDTO>> getAllDetail() {
         return ResponseEntity.ok().body(service.getAllDetail());
     }
 }

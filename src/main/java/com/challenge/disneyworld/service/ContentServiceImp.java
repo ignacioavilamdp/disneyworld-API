@@ -1,5 +1,7 @@
 package com.challenge.disneyworld.service;
 
+import com.challenge.disneyworld.models.dto.ContentDetailDTO;
+import com.challenge.disneyworld.models.dto.StarBaseDTO;
 import com.challenge.disneyworld.repositories.ContentRepository;
 import com.challenge.disneyworld.repositories.GenreRepository;
 import com.challenge.disneyworld.repositories.StarRepository;
@@ -11,9 +13,7 @@ import com.challenge.disneyworld.models.domain.Content;
 import com.challenge.disneyworld.models.domain.Genre;
 import com.challenge.disneyworld.models.domain.Rating;
 import com.challenge.disneyworld.models.domain.Star;
-import com.challenge.disneyworld.models.dto.ContentDTOBase;
-import com.challenge.disneyworld.models.dto.ContentDTODetail;
-import com.challenge.disneyworld.models.dto.StarDTOBase;
+import com.challenge.disneyworld.models.dto.ContentBaseDTO;
 import com.challenge.disneyworld.models.mappers.ContentMapper;
 import com.challenge.disneyworld.models.mappers.StarMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,28 +41,28 @@ public class ContentServiceImp implements ContentService{
 
     @Override
     @Transactional(readOnly = true)
-    public List<ContentDTOBase> search(String title, Integer genreId, String order) {
+    public List<ContentBaseDTO> search(String title, Integer genreId, String order) {
         if (order != null && !order.equals("ASC") && !order.equals("DESC")){
             throw new InvalidOrderCriteriaException("Invalid order criteria.");
         }
         return contentRepository.search(title, genreId, order).
                 stream().
-                map(content -> ContentMapper.domainToDTOBase(content)).
+                map(content -> ContentMapper.entityToBaseDTO(content)).
                 collect(Collectors.toList());
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<ContentDTODetail> getAll() {
+    public List<ContentDetailDTO> getAll() {
         return contentRepository.getAll().
                 stream().
-                map(content -> ContentMapper.domainToDTODetail(content)).
+                map(content -> ContentMapper.entityToDetailDTO(content)).
                 collect(Collectors.toList());
     }
 
     @Override
     @Transactional(readOnly = true)
-    public ContentDTODetail getById(Long id){
+    public ContentDetailDTO getById(Long id){
         if (id == null){
             throw new InvalidIdException("No id passed");
         }
@@ -71,7 +71,7 @@ public class ContentServiceImp implements ContentService{
         if (content == null)
             throw new NonExistentEntityException("There is no movie with ID: " + id);
 
-        return ContentMapper.domainToDTODetail(contentRepository.getById(id));
+        return ContentMapper.entityToDetailDTO(contentRepository.getById(id));
     }
 
     @Override
@@ -91,7 +91,7 @@ public class ContentServiceImp implements ContentService{
 
     @Override
     @Transactional
-    public ContentDTODetail updateById(Long id, ContentDTODetail dto){
+    public ContentDetailDTO updateById(Long id, ContentDetailDTO dto){
         if (id == null){
             throw new InvalidIdException("No id passed");
         }
@@ -119,12 +119,12 @@ public class ContentServiceImp implements ContentService{
             throw new InvalidDTOException("There is already a movie with the same title (" + dto.getTitle() + "). No duplicates allowed");
 
         modifyEntityFromDTO(contentById, dto);
-        return ContentMapper.domainToDTODetail(contentById);
+        return ContentMapper.entityToDetailDTO(contentById);
     }
 
     @Override
     @Transactional
-    public ContentDTODetail save(ContentDTODetail dto) {
+    public ContentDetailDTO save(ContentDetailDTO dto) {
         if (dto.getTitle() == null)
             throw new InvalidDTOException("No title passed. Title is mandatory.");
 
@@ -140,7 +140,7 @@ public class ContentServiceImp implements ContentService{
 
         Content content = new Content();
         modifyEntityFromDTO(content, dto);
-        return ContentMapper.domainToDTODetail(contentRepository.save(content));
+        return ContentMapper.entityToDetailDTO(contentRepository.save(content));
     }
 
     @Override
@@ -157,7 +157,7 @@ public class ContentServiceImp implements ContentService{
 
     @Override
     @Transactional(readOnly = true)
-    public List<StarDTOBase> getStarsById(Long id) {
+    public List<StarBaseDTO> getStarsById(Long id) {
         if (id == null){
             throw new InvalidIdException("No id passed");
         }
@@ -168,11 +168,11 @@ public class ContentServiceImp implements ContentService{
 
         return content.getStars().
                 stream().
-                map(star -> StarMapper.domainToDTOBase(star)).
+                map(star -> StarMapper.entityToBaseDTO(star)).
                 collect(Collectors.toList());
     }
 
-    private void modifyEntityFromDTO(Content content, ContentDTODetail dto){
+    private void modifyEntityFromDTO(Content content, ContentDetailDTO dto){
         content.setTitle(dto.getTitle());
         content.setImage(dto.getImage());
         content.setDate(dto.getDate());

@@ -2,22 +2,22 @@ package com.challenge.disneyworld.models.mappers;
 
 import com.challenge.disneyworld.models.domain.Content;
 import com.challenge.disneyworld.models.domain.Star;
-import com.challenge.disneyworld.models.dto.StarDTOBase;
-import com.challenge.disneyworld.models.dto.StarDTODetail;
+import com.challenge.disneyworld.models.dto.StarBaseDTO;
+import com.challenge.disneyworld.models.dto.StarDetailDTO;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * A class that provides static methods to map from {@link Star} to
- * {@link StarDTOBase} or {@link StarDTODetail}
+ * {@link StarBaseDTO} or {@link StarDetailDTO}
  */
 public class StarMapper {
 
-    public static StarDTOBase domainToDTOBase(Star star){
-        StarDTOBase dto = null;
+    public static StarBaseDTO entityToBaseDTO(Star star){
+        StarBaseDTO dto = null;
         if (star != null) {
-            dto = new StarDTOBase();
+            dto = new StarBaseDTO();
             dto.setId(star.getId());
             dto.setName(star.getName());
             dto.setImage(star.getImage());
@@ -25,10 +25,10 @@ public class StarMapper {
         return dto;
     }
 
-    public static StarDTODetail domainToDTODetail(Star star){
-        StarDTODetail dto = null;
+    public static StarDetailDTO entityToDetailDTO(Star star){
+        StarDetailDTO dto = null;
         if (star != null) {
-            dto = new StarDTODetail();
+            dto = new StarDetailDTO();
             dto.setId(star.getId());
             dto.setName(star.getName());
             dto.setAge(star.getAge());

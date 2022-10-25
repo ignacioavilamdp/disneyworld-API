@@ -9,7 +9,7 @@ import java.util.List;
  * {@link com.challenge.disneyworld.models.domain.Star}
  */
 @Schema(name = "Character-detail")
-public class StarDTODetail extends StarDTOBase{
+public class StarDetailDTO extends StarBaseDTO {
 
     private short age;
     private float weight;

@@ -2,22 +2,22 @@ package com.challenge.disneyworld.models.mappers;
 
 import com.challenge.disneyworld.models.domain.Content;
 import com.challenge.disneyworld.models.domain.Star;
-import com.challenge.disneyworld.models.dto.ContentDTOBase;
-import com.challenge.disneyworld.models.dto.ContentDTODetail;
+import com.challenge.disneyworld.models.dto.ContentBaseDTO;
+import com.challenge.disneyworld.models.dto.ContentDetailDTO;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * A class that provides static methods to map from {@link Content} to
- * {@link ContentDTOBase} or {@link ContentDTODetail}
+ * {@link ContentBaseDTO} or {@link ContentDetailDTO}
  */
 public class ContentMapper {
 
-    public static ContentDTOBase domainToDTOBase(Content content){
-        ContentDTOBase dto = null;
+    public static ContentBaseDTO entityToBaseDTO(Content content){
+        ContentBaseDTO dto = null;
         if (content != null) {
-            dto = new ContentDTOBase();
+            dto = new ContentBaseDTO();
             dto.setId(content.getId());
             dto.setTitle(content.getTitle());
             dto.setImage(content.getImage());
@@ -26,10 +26,10 @@ public class ContentMapper {
         return dto;
     }
 
-    public static ContentDTODetail domainToDTODetail(Content content){
-        ContentDTODetail dto = null;
+    public static ContentDetailDTO entityToDetailDTO(Content content){
+        ContentDetailDTO dto = null;
         if (content != null){
-            dto = new ContentDTODetail();
+            dto = new ContentDetailDTO();
             dto.setId(content.getId());
             dto.setTitle(content.getTitle());
             dto.setDate(content.getDate());

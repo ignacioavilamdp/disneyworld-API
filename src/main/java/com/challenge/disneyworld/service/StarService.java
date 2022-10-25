@@ -1,9 +1,9 @@
 package com.challenge.disneyworld.service;
 
 import com.challenge.disneyworld.exceptions.*;
-import com.challenge.disneyworld.models.dto.ContentDTOBase;
-import com.challenge.disneyworld.models.dto.StarDTOBase;
-import com.challenge.disneyworld.models.dto.StarDTODetail;
+import com.challenge.disneyworld.models.dto.ContentBaseDTO;
+import com.challenge.disneyworld.models.dto.StarBaseDTO;
+import com.challenge.disneyworld.models.dto.StarDetailDTO;
 
 import java.util.List;
 
@@ -25,14 +25,14 @@ public interface StarService {
      * @return a list containing all stars as basic DTO's that fulfill the
      * search criteria. If no star is found, then the list will be empty.
      */
-    List<StarDTOBase> search(String name, Short age, Float weight, Long movieId);
+    List<StarBaseDTO> search(String name, Short age, Float weight, Long movieId);
 
     /**
      * Retrieves a list of all stars.
      *
      * @return a list of all stars as detailed DTO's.
      */
-    List<StarDTODetail> getAll();
+    List<StarDetailDTO> getAll();
 
     /**
      * Retrieves a star by its id.
@@ -42,7 +42,7 @@ public interface StarService {
      * @throws InvalidIdException if id is null.
      * @throws NonExistentEntityException if there is no star with the given id.
      */
-    StarDTODetail getById(Long id);
+    StarDetailDTO getById(Long id);
 
     /**
      * Updates the star instance with the given id using the data contained
@@ -64,7 +64,7 @@ public interface StarService {
      * another star with the same name, some content in the contents list does
      * not exist.
      */
-    StarDTODetail updateById(Long id, StarDTODetail dto);
+    StarDetailDTO updateById(Long id, StarDetailDTO dto);
 
     /**
      * Creates and saves a new star instance into the underlying storage
@@ -80,7 +80,7 @@ public interface StarService {
      * the name is null, there is another star with the same name, some content
      * in the contents list does not exist.
      */
-    StarDTODetail save(StarDTODetail dto);
+    StarDetailDTO save(StarDetailDTO dto);
 
     /**
      * Deletes the star instance with the given id.
@@ -141,5 +141,5 @@ public interface StarService {
      * @throws InvalidIdException if the given id is null.
      * @throws NonExistentEntityException if there is no star with the given id.
      */
-    List<ContentDTOBase> getContentsById(Long id);
+    List<ContentBaseDTO> getContentsById(Long id);
 }

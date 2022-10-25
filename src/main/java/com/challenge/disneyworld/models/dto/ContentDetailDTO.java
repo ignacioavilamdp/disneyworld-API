@@ -9,7 +9,7 @@ import java.util.List;
  * {@link com.challenge.disneyworld.models.domain.Content}
  */
 @Schema(name = "Movie-detail")
-public class ContentDTODetail extends ContentDTOBase{
+public class ContentDetailDTO extends ContentBaseDTO {
 
     private String rating;
     private String genre;

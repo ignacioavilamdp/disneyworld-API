@@ -9,7 +9,7 @@ import java.time.LocalDate;
  * {@link com.challenge.disneyworld.models.domain.Content}
  */
 @Schema(name = "Movie")
-public class ContentDTOBase {
+public class ContentBaseDTO {
 
     private long id;
     private String title;

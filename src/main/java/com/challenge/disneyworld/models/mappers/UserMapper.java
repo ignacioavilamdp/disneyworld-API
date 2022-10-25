@@ -9,7 +9,7 @@ import com.challenge.disneyworld.models.dto.UserDTORegister;
  */
 public class UserMapper {
 
-    public static UserDTORegister domainToDTO(User user){
+    public static UserDTORegister entityToRegisterDTO(User user){
         UserDTORegister dto = null;
         if (user != null){
             dto = new UserDTORegister();

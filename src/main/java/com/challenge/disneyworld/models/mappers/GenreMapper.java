@@ -1,21 +1,21 @@
 package com.challenge.disneyworld.models.mappers;
 
 import com.challenge.disneyworld.models.domain.Genre;
-import com.challenge.disneyworld.models.dto.GenreDTOBase;
-import com.challenge.disneyworld.models.dto.GenreDTODetail;
+import com.challenge.disneyworld.models.dto.GenreBaseDTO;
+import com.challenge.disneyworld.models.dto.GenreDetailDTO;
 
 import java.util.stream.Collectors;
 
 /**
  * A class that provides static methods to map from {@link Genre} to
- * {@link GenreDTOBase} or {@link GenreDTODetail}
+ * {@link GenreBaseDTO} or {@link GenreDetailDTO}
  */
 public class GenreMapper {
 
-    public static GenreDTOBase domainToDTOBase(Genre genre){
-        GenreDTOBase dto = null;
+    public static GenreBaseDTO entityToBaseDTO(Genre genre){
+        GenreBaseDTO dto = null;
         if (genre != null) {
-            dto = new GenreDTOBase();
+            dto = new GenreBaseDTO();
             dto.setId(genre.getId());
             dto.setName(genre.getName());
             dto.setImage(genre.getImage());
@@ -23,10 +23,10 @@ public class GenreMapper {
         return dto;
     }
 
-    public static GenreDTODetail domainToDTODetail(Genre genre){
-        GenreDTODetail dto = null;
+    public static GenreDetailDTO entityToDetailDTO(Genre genre){
+        GenreDetailDTO dto = null;
         if (genre != null){
-            dto = new GenreDTODetail();
+            dto = new GenreDetailDTO();
             dto.setName(genre.getName());
             dto.setImage(genre.getImage());
             dto.setId(genre.getId());
@@ -34,7 +34,7 @@ public class GenreMapper {
                     genre.
                     getContents().
                     stream().
-                            map(content -> ContentMapper.domainToDTOBase(content)).
+                            map(content -> ContentMapper.entityToBaseDTO(content)).
                             collect(Collectors.toList())
             );
         }

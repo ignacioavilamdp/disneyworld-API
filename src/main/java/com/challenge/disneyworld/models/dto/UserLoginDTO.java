@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * {@link com.challenge.disneyworld.models.domain.User} for login purposes.
  */
 @Schema(name = "User-login")
-public class UserDTOLogin {
+public class UserLoginDTO {
 
     private String name;
     private String password;

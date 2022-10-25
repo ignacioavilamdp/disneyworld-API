@@ -1,13 +1,13 @@
 package com.challenge.disneyworld.service;
 
+import com.challenge.disneyworld.models.dto.ContentBaseDTO;
+import com.challenge.disneyworld.models.dto.StarBaseDTO;
+import com.challenge.disneyworld.models.dto.StarDetailDTO;
 import com.challenge.disneyworld.repositories.ContentRepository;
 import com.challenge.disneyworld.repositories.StarRepository;
 import com.challenge.disneyworld.exceptions.*;
 import com.challenge.disneyworld.models.domain.Content;
 import com.challenge.disneyworld.models.domain.Star;
-import com.challenge.disneyworld.models.dto.ContentDTOBase;
-import com.challenge.disneyworld.models.dto.StarDTOBase;
-import com.challenge.disneyworld.models.dto.StarDTODetail;
 import com.challenge.disneyworld.models.mappers.ContentMapper;
 import com.challenge.disneyworld.models.mappers.StarMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,25 +31,25 @@ public class StarServiceImp implements StarService{
 
     @Override
     @Transactional(readOnly = true)
-    public List<StarDTOBase> search(String name, Short age, Float weight, Long movieId){
+    public List<StarBaseDTO> search(String name, Short age, Float weight, Long movieId){
         return starRepository.search(name, age, weight, movieId).
                 stream().
-                map(star -> StarMapper.domainToDTOBase(star)).
+                map(star -> StarMapper.entityToBaseDTO(star)).
                 collect(Collectors.toList());
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<StarDTODetail> getAll() {
+    public List<StarDetailDTO> getAll() {
         return starRepository.getAll().
                 stream().
-                map(star -> StarMapper.domainToDTODetail(star)).
+                map(star -> StarMapper.entityToDetailDTO(star)).
                 collect(Collectors.toList());
     }
 
     @Override
     @Transactional(readOnly = true)
-    public StarDTODetail getById(Long id){
+    public StarDetailDTO getById(Long id){
         if (id == null){
             throw new InvalidIdException("No id passed");
         }
@@ -58,7 +58,7 @@ public class StarServiceImp implements StarService{
         if (star == null)
             throw new NonExistentEntityException("There is no character with ID: " + id);
 
-        return StarMapper.domainToDTODetail(star);
+        return StarMapper.entityToDetailDTO(star);
     }
 
     @Override
@@ -74,7 +74,7 @@ public class StarServiceImp implements StarService{
 
     @Override
     @Transactional
-    public StarDTODetail updateById(Long id, StarDTODetail dto){
+    public StarDetailDTO updateById(Long id, StarDetailDTO dto){
         if (id == null){
             throw new InvalidIdException("No id passed");
         }
@@ -95,12 +95,12 @@ public class StarServiceImp implements StarService{
             throw new InvalidDTOException("There is already a character with the same name (" + dto.getName() + "). No duplicates allowed.");
 
         modifyEntityFromDTO(starById, dto);
-        return StarMapper.domainToDTODetail(starById);
+        return StarMapper.entityToDetailDTO(starById);
     }
 
     @Override
     @Transactional
-    public StarDTODetail save(StarDTODetail dto) {
+    public StarDetailDTO save(StarDetailDTO dto) {
         if (dto.getName() == null)
             throw new InvalidDTOException("No name passed. Name is mandatory.");
 
@@ -109,7 +109,7 @@ public class StarServiceImp implements StarService{
 
         Star star = new Star();
         modifyEntityFromDTO(star, dto);
-        return StarMapper.domainToDTODetail(starRepository.save(star));
+        return StarMapper.entityToDetailDTO(starRepository.save(star));
     }
 
     @Override
@@ -166,7 +166,7 @@ public class StarServiceImp implements StarService{
 
     @Override
     @Transactional(readOnly = true)
-    public List<ContentDTOBase> getContentsById(Long id) {
+    public List<ContentBaseDTO> getContentsById(Long id) {
         if (id == null){
             throw new InvalidIdException("No id passed");
         }
@@ -177,11 +177,11 @@ public class StarServiceImp implements StarService{
 
         return star.getContents().
                 stream().
-                map(content -> ContentMapper.domainToDTOBase(content)).
+                map(content -> ContentMapper.entityToBaseDTO(content)).
                 collect(Collectors.toList());
     }
 
-    private void modifyEntityFromDTO(Star star, StarDTODetail dto){
+    private void modifyEntityFromDTO(Star star, StarDetailDTO dto){
         star.setName(dto.getName());
         star.setImage(dto.getImage());
         star.setAge(dto.getAge());

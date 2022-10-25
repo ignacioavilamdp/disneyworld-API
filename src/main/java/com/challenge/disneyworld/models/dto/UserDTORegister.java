@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  */
 @Schema(name = "User-register")
 public class UserDTORegister {
+
     private String name;
     private String email;
     private String password;

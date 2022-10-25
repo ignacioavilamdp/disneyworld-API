@@ -82,7 +82,7 @@ public class UserServiceImp implements UserService{
     public List<UserDTORegister> getAll() {
         return userRepository.getAll().
                 stream().
-                map(user -> UserMapper.domainToDTO(user)).
+                map(user -> UserMapper.entityToRegisterDTO(user)).
                 collect(Collectors.toList());
     }
 

@@ -9,15 +9,15 @@ import java.util.List;
  * {@link com.challenge.disneyworld.models.domain.Genre}
  */
 @Schema(name = "Genre-detail")
-public class GenreDTODetail extends GenreDTOBase{
+public class GenreDetailDTO extends GenreBaseDTO {
 
     @Schema(name = "movies")
-    private List<ContentDTOBase> contents;
+    private List<ContentBaseDTO> contents;
 
-    public List<ContentDTOBase> getContents() {
+    public List<ContentBaseDTO> getContents() {
         return contents;
     }
-    public void setContents(List<ContentDTOBase> contents) {
+    public void setContents(List<ContentBaseDTO> contents) {
         this.contents = contents;
     }
 
