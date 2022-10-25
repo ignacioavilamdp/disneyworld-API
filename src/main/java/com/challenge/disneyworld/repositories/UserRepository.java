@@ -1,4 +1,4 @@
-package com.challenge.disneyworld.dao;
+package com.challenge.disneyworld.repositories;
 
 import com.challenge.disneyworld.models.domain.User;
 
@@ -8,7 +8,7 @@ import java.util.List;
  * Interface to interact with an underlying storage mechanism designed to
  * persist User instances.
  */
-public interface UserDAO {
+public interface UserRepository {
 
     /**
      * Retrieves a user by its name.

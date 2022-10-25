@@ -1,8 +1,8 @@
 package com.challenge.disneyworld.service;
 
-import com.challenge.disneyworld.dao.ContentDAO;
-import com.challenge.disneyworld.dao.GenreDAO;
-import com.challenge.disneyworld.dao.StarDAO;
+import com.challenge.disneyworld.repositories.ContentRepository;
+import com.challenge.disneyworld.repositories.GenreRepository;
+import com.challenge.disneyworld.repositories.StarRepository;
 import com.challenge.disneyworld.exceptions.InvalidDTOException;
 import com.challenge.disneyworld.exceptions.InvalidIdException;
 import com.challenge.disneyworld.exceptions.InvalidOrderCriteriaException;
@@ -24,18 +24,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Implementation of {@link ContentService} using {@link ContentDAO},
- * {@link StarDAO} and {@link GenreDAO} instances.
+ * Implementation of {@link ContentService} using {@link ContentRepository},
+ * {@link StarRepository} and {@link GenreRepository} instances.
  */
 @Component
 public class ContentServiceImp implements ContentService{
 
     @Autowired
-    private ContentDAO contentDAO;
+    private ContentRepository contentRepository;
     @Autowired
-    private StarDAO starDAO;
+    private StarRepository starRepository;
     @Autowired
-    private GenreDAO genreDAO;
+    private GenreRepository genreRepository;
     @Autowired
     private StarService starService;
 
@@ -45,7 +45,7 @@ public class ContentServiceImp implements ContentService{
         if (order != null && !order.equals("ASC") && !order.equals("DESC")){
             throw new InvalidOrderCriteriaException("Invalid order criteria.");
         }
-        return contentDAO.search(title, genreId, order).
+        return contentRepository.search(title, genreId, order).
                 stream().
                 map(content -> ContentMapper.domainToDTOBase(content)).
                 collect(Collectors.toList());
@@ -54,7 +54,7 @@ public class ContentServiceImp implements ContentService{
     @Override
     @Transactional(readOnly = true)
     public List<ContentDTODetail> getAll() {
-        return contentDAO.getAll().
+        return contentRepository.getAll().
                 stream().
                 map(content -> ContentMapper.domainToDTODetail(content)).
                 collect(Collectors.toList());
@@ -67,11 +67,11 @@ public class ContentServiceImp implements ContentService{
             throw new InvalidIdException("No id passed");
         }
 
-        Content content = contentDAO.getById(id);
+        Content content = contentRepository.getById(id);
         if (content == null)
             throw new NonExistentEntityException("There is no movie with ID: " + id);
 
-        return ContentMapper.domainToDTODetail(contentDAO.getById(id));
+        return ContentMapper.domainToDTODetail(contentRepository.getById(id));
     }
 
     @Override
@@ -81,11 +81,11 @@ public class ContentServiceImp implements ContentService{
             throw new InvalidIdException("No id passed");
         }
 
-        Content content = contentDAO.getById(id);
+        Content content = contentRepository.getById(id);
         if (content == null)
             throw new NonExistentEntityException("There is no movie with ID: " + id);
 
-        contentDAO.delete(content);
+        contentRepository.delete(content);
         return "Movie with ID: " + id + " - successfully removed";
     }
 
@@ -96,7 +96,7 @@ public class ContentServiceImp implements ContentService{
             throw new InvalidIdException("No id passed");
         }
 
-        Content contentById = contentDAO.getById(dto.getId());
+        Content contentById = contentRepository.getById(dto.getId());
         if (contentById == null)
             throw new NonExistentEntityException("There is no movie with ID: " + id);
 
@@ -114,7 +114,7 @@ public class ContentServiceImp implements ContentService{
             throw new InvalidDTOException("Invalid rating");
         }
 
-        Content contentByTitle = contentDAO.getByTitle(dto.getTitle());
+        Content contentByTitle = contentRepository.getByTitle(dto.getTitle());
         if (contentByTitle != null && contentByTitle.getId() != contentById.getId())
             throw new InvalidDTOException("There is already a movie with the same title (" + dto.getTitle() + "). No duplicates allowed");
 
@@ -131,7 +131,7 @@ public class ContentServiceImp implements ContentService{
         if (dto.getRating() == null)
             throw new InvalidDTOException("No rating passed. Rating is mandatory.");
 
-        if (contentDAO.existsByTitle(dto.getTitle()))
+        if (contentRepository.existsByTitle(dto.getTitle()))
             throw new InvalidDTOException("There is already a movie with the same title (" + dto.getTitle() + "). No duplicates allowed");
 
         if ( !isValidRating(dto.getRating()) ){
@@ -140,7 +140,7 @@ public class ContentServiceImp implements ContentService{
 
         Content content = new Content();
         modifyEntityFromDTO(content, dto);
-        return ContentMapper.domainToDTODetail(contentDAO.save(content));
+        return ContentMapper.domainToDTODetail(contentRepository.save(content));
     }
 
     @Override
@@ -162,7 +162,7 @@ public class ContentServiceImp implements ContentService{
             throw new InvalidIdException("No id passed");
         }
 
-        Content content = contentDAO.getById(id);
+        Content content = contentRepository.getById(id);
         if (content == null)
             throw new NonExistentEntityException("There is no movie with ID: " + id);
 
@@ -181,7 +181,7 @@ public class ContentServiceImp implements ContentService{
         /*
          * First we need to check if the genre entity exists.
          */
-        Genre genre = genreDAO.getByName(dto.getGenre());
+        Genre genre = genreRepository.getByName(dto.getGenre());
         if (genre == null)
             throw new InvalidDTOException("There is no genre named: " + dto.getGenre());
         content.setGenre(genre);
@@ -202,7 +202,7 @@ public class ContentServiceImp implements ContentService{
          * add the content entity to the star first.
          */
         for (String starName : dto.getStars()){
-            Star star = starDAO.getByName(starName);
+            Star star = starRepository.getByName(starName);
             if (star == null)
                 throw new InvalidDTOException("There is no character with name: " + starName + ". Please, add the character first.");
             star.getContents().add(content);

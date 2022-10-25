@@ -1,7 +1,7 @@
 package com.challenge.disneyworld.service;
 
-import com.challenge.disneyworld.dao.ContentDAO;
-import com.challenge.disneyworld.dao.StarDAO;
+import com.challenge.disneyworld.repositories.ContentRepository;
+import com.challenge.disneyworld.repositories.StarRepository;
 import com.challenge.disneyworld.exceptions.*;
 import com.challenge.disneyworld.models.domain.Content;
 import com.challenge.disneyworld.models.domain.Star;
@@ -18,21 +18,21 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Implementation of {@link StarService} using {@link ContentDAO} and
- * {@link StarDAO} instances.
+ * Implementation of {@link StarService} using {@link ContentRepository} and
+ * {@link StarRepository} instances.
  */
 @Component
 public class StarServiceImp implements StarService{
 
     @Autowired
-    private StarDAO starDAO;
+    private StarRepository starRepository;
     @Autowired
-    private ContentDAO contentDao;
+    private ContentRepository contentRepository;
 
     @Override
     @Transactional(readOnly = true)
     public List<StarDTOBase> search(String name, Short age, Float weight, Long movieId){
-        return starDAO.search(name, age, weight, movieId).
+        return starRepository.search(name, age, weight, movieId).
                 stream().
                 map(star -> StarMapper.domainToDTOBase(star)).
                 collect(Collectors.toList());
@@ -41,7 +41,7 @@ public class StarServiceImp implements StarService{
     @Override
     @Transactional(readOnly = true)
     public List<StarDTODetail> getAll() {
-        return starDAO.getAll().
+        return starRepository.getAll().
                 stream().
                 map(star -> StarMapper.domainToDTODetail(star)).
                 collect(Collectors.toList());
@@ -54,7 +54,7 @@ public class StarServiceImp implements StarService{
             throw new InvalidIdException("No id passed");
         }
 
-        Star star = starDAO.getById(id);
+        Star star = starRepository.getById(id);
         if (star == null)
             throw new NonExistentEntityException("There is no character with ID: " + id);
 
@@ -64,11 +64,11 @@ public class StarServiceImp implements StarService{
     @Override
     @Transactional
     public String deleteById(Long id) {
-        Star star = starDAO.getById(id);
+        Star star = starRepository.getById(id);
         if ( star == null )
             throw new NonExistentEntityException("There is no character with ID: " + id);
 
-        starDAO.delete(star);
+        starRepository.delete(star);
         return "Character with ID: " + id + " - successfully removed";
     }
 
@@ -79,7 +79,7 @@ public class StarServiceImp implements StarService{
             throw new InvalidIdException("No id passed");
         }
 
-        Star starById = starDAO.getById(dto.getId());
+        Star starById = starRepository.getById(dto.getId());
         if (starById == null)
             throw new NonExistentEntityException("There is no character with ID: " + id);
 
@@ -90,7 +90,7 @@ public class StarServiceImp implements StarService{
         if (dto.getName() == null)
             throw new InvalidDTOException("No name passed. Name is mandatory.");
 
-        Star starByName = starDAO.getByName(dto.getName());
+        Star starByName = starRepository.getByName(dto.getName());
         if (starByName != null && starByName.getId() != starById.getId())
             throw new InvalidDTOException("There is already a character with the same name (" + dto.getName() + "). No duplicates allowed.");
 
@@ -104,12 +104,12 @@ public class StarServiceImp implements StarService{
         if (dto.getName() == null)
             throw new InvalidDTOException("No name passed. Name is mandatory.");
 
-        if (starDAO.existsByName(dto.getName()))
+        if (starRepository.existsByName(dto.getName()))
             throw new InvalidDTOException("There is already a character with the same name (" + dto.getName() + "). No duplicates allowed");
 
         Star star = new Star();
         modifyEntityFromDTO(star, dto);
-        return StarMapper.domainToDTODetail(starDAO.save(star));
+        return StarMapper.domainToDTODetail(starRepository.save(star));
     }
 
     @Override
@@ -123,11 +123,11 @@ public class StarServiceImp implements StarService{
             throw new InvalidIdException("No content id passed");
         }
 
-        Star star = starDAO.getById(starId);
+        Star star = starRepository.getById(starId);
         if (star == null)
             throw new NonExistentEntityException("There is no character with that ID: " + starId);
 
-        Content content = contentDao.getById(contentId);
+        Content content = contentRepository.getById(contentId);
         if (content == null)
             throw new NonExistentEntityException("There is no content with that ID: " + contentId);
 
@@ -149,11 +149,11 @@ public class StarServiceImp implements StarService{
             throw new InvalidIdException("No content id passed");
         }
 
-        Star star = starDAO.getById(starId);
+        Star star = starRepository.getById(starId);
         if (star == null)
             throw new NonExistentEntityException("There is no character with that ID: " + starId);
 
-        Content content = contentDao.getById(contentId);
+        Content content = contentRepository.getById(contentId);
         if (content == null)
             throw new NonExistentEntityException("There is no content with that ID: " + contentId);
 
@@ -171,7 +171,7 @@ public class StarServiceImp implements StarService{
             throw new InvalidIdException("No id passed");
         }
 
-        Star star = starDAO.getById(id);
+        Star star = starRepository.getById(id);
         if (star == null)
             throw new NonExistentEntityException("There is no character with that ID.");
 
@@ -194,7 +194,7 @@ public class StarServiceImp implements StarService{
          */
         star.getContents().clear();
         for (String contentTitle : dto.getContents()){
-            Content content = contentDao.getByTitle(contentTitle);
+            Content content = contentRepository.getByTitle(contentTitle);
             if (content == null)
                 throw new InvalidDTOException("There is no movie with title: " + contentTitle + ". Please, add the movie first.");
             star.getContents().add(content);

@@ -1,7 +1,6 @@
-package com.challenge.disneyworld.dao;
+package com.challenge.disneyworld.repositories;
 
 import com.challenge.disneyworld.models.domain.Content;
-import com.challenge.disneyworld.models.domain.Star;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
@@ -10,10 +9,10 @@ import javax.persistence.TypedQuery;
 import java.util.List;
 
 /**
- * Implementation of {@link ContentDAO} using JPA.
+ * Implementation of {@link ContentRepository} using JPA.
  */
 @Component
-public class ContentDAOImp implements ContentDAO{
+public class ContentRepositoryImp implements ContentRepository {
 
     @PersistenceContext
     private EntityManager em;

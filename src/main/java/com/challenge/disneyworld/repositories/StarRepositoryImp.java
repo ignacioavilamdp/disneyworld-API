@@ -1,6 +1,5 @@
-package com.challenge.disneyworld.dao;
+package com.challenge.disneyworld.repositories;
 
-import com.challenge.disneyworld.models.domain.Content;
 import com.challenge.disneyworld.models.domain.Star;
 import org.springframework.stereotype.Component;
 
@@ -10,10 +9,10 @@ import javax.persistence.TypedQuery;
 import java.util.List;
 
 /**
- * Implementation of {@link StarDAO} using JPA.
+ * Implementation of {@link StarRepository} using JPA.
  */
 @Component
-public class StarDAOImp implements StarDAO{
+public class StarRepositoryImp implements StarRepository {
 
     @PersistenceContext
     private EntityManager em;

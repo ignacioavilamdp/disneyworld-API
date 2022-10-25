@@ -1,4 +1,4 @@
-package com.challenge.disneyworld.dao;
+package com.challenge.disneyworld.repositories;
 
 import com.challenge.disneyworld.models.domain.Genre;
 import org.springframework.stereotype.Component;
@@ -9,10 +9,10 @@ import javax.persistence.TypedQuery;
 import java.util.List;
 
 /**
- * Implementation of {@link GenreDAO} using JPA.
+ * Implementation of {@link GenreRepository} using JPA.
  */
 @Component
-public class GenreDAOImp implements GenreDAO{
+public class GenreRepositoryImp implements GenreRepository {
 
     @PersistenceContext
     private EntityManager em;

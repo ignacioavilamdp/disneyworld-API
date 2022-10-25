@@ -1,8 +1,6 @@
-package com.challenge.disneyworld.dao;
+package com.challenge.disneyworld.repositories;
 
 import com.challenge.disneyworld.models.domain.Content;
-import com.challenge.disneyworld.models.domain.Star;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -10,7 +8,7 @@ import java.util.List;
  * Interface to interact with an underlying storage mechanism designed to
  * persist Content instances.
  */
-public interface ContentDAO {
+public interface ContentRepository {
     /**
      * Retrieves a content by its id.
      *

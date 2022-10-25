@@ -1,6 +1,6 @@
 package com.challenge.disneyworld.service;
 
-import com.challenge.disneyworld.dao.GenreDAO;
+import com.challenge.disneyworld.repositories.GenreRepository;
 import com.challenge.disneyworld.models.dto.GenreDTOBase;
 import com.challenge.disneyworld.models.dto.GenreDTODetail;
 import com.challenge.disneyworld.models.mappers.GenreMapper;
@@ -15,12 +15,12 @@ import java.util.stream.Collectors;
 public class GenreServiceImp implements GenreService{
 
     @Autowired
-    private GenreDAO dao;
+    private GenreRepository genreRepository;
 
     @Override
     @Transactional(readOnly = true)
     public List<GenreDTODetail> getAllDetail() {
-        return dao.getAll().
+        return genreRepository.getAll().
                 stream().
                 map(genre -> GenreMapper.domainToDTODetail(genre)).
                 collect(Collectors.toList());
@@ -29,7 +29,7 @@ public class GenreServiceImp implements GenreService{
     @Override
     @Transactional(readOnly = true)
     public List<GenreDTOBase> getAllBase() {
-        return dao.getAll().
+        return genreRepository.getAll().
                 stream().
                 map(genre -> GenreMapper.domainToDTOBase(genre)).
                 collect(Collectors.toList());

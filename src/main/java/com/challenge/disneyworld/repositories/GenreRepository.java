@@ -1,4 +1,4 @@
-package com.challenge.disneyworld.dao;
+package com.challenge.disneyworld.repositories;
 
 import com.challenge.disneyworld.models.domain.Genre;
 
@@ -8,7 +8,7 @@ import java.util.List;
  * Interface to interact with an underlying storage mechanism designed to
  * persist Genre instances.
  */
-public interface GenreDAO {
+public interface GenreRepository {
 
     /**
      * Retrieves a genre by its id.

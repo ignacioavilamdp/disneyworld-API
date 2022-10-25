@@ -1,6 +1,6 @@
 package com.challenge.disneyworld.service;
 
-import com.challenge.disneyworld.dao.UserDAO;
+import com.challenge.disneyworld.repositories.UserRepository;
 import com.challenge.disneyworld.exceptions.InvalidDTOException;
 import com.challenge.disneyworld.models.domain.User;
 import com.challenge.disneyworld.models.domain.UserRole;
@@ -19,14 +19,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Implementation of {@link UserService} using a {@link UserDAO}
+ * Implementation of {@link UserService} using a {@link UserRepository}
  * instance.
  */
 @Component
 public class UserServiceImp implements UserService{
 
     @Autowired
-    private UserDAO userDAO;
+    private UserRepository userRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
@@ -47,10 +47,10 @@ public class UserServiceImp implements UserService{
         if (dto.getRole() == null)
             throw new InvalidDTOException("No role passed. Role is mandatory.");
 
-        if (userDAO.existsByName(dto.getName()))
+        if (userRepository.existsByName(dto.getName()))
             throw new InvalidDTOException("There is already a user with the same name (" + dto.getName() + "). No duplicates allowed");
 
-        if (userDAO.existsByEmail(dto.getEmail()))
+        if (userRepository.existsByEmail(dto.getEmail()))
             throw new InvalidDTOException("There is already a user with the same email (" + dto.getEmail() + "). No duplicates allowed");
 
         if ( !isValidRole(dto.getRole())){
@@ -62,7 +62,7 @@ public class UserServiceImp implements UserService{
         newUser.setEmail(dto.getEmail());
         newUser.setPassword(passwordEncoder.encode(dto.getPassword()));
         newUser.setRole(dto.getRole());
-        userDAO.save(newUser);
+        userRepository.save(newUser);
         return "User successfully registered";
     }
 
@@ -80,7 +80,7 @@ public class UserServiceImp implements UserService{
     @Override
     @Transactional(readOnly = true)
     public List<UserDTORegister> getAll() {
-        return userDAO.getAll().
+        return userRepository.getAll().
                 stream().
                 map(user -> UserMapper.domainToDTO(user)).
                 collect(Collectors.toList());

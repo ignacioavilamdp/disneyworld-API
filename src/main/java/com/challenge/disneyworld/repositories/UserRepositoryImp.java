@@ -1,4 +1,4 @@
-package com.challenge.disneyworld.dao;
+package com.challenge.disneyworld.repositories;
 
 import com.challenge.disneyworld.models.domain.User;
 import org.springframework.stereotype.Component;
@@ -9,10 +9,10 @@ import javax.persistence.TypedQuery;
 import java.util.List;
 
 /**
- * Implementation of {@link UserDAO} using JPA.
+ * Implementation of {@link UserRepository} using JPA.
  */
 @Component
-public class UserDAOImp implements UserDAO {
+public class UserRepositoryImp implements UserRepository {
 
     @PersistenceContext
     private EntityManager em;
