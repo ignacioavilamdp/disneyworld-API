@@ -31,6 +31,8 @@ public class UserServiceImp implements UserService{
     private PasswordEncoder passwordEncoder;
     @Autowired
     private AuthenticationManager authenticationManager;
+    @Autowired
+    private UserMapper userMapper;
 
     @Override
     @Transactional
@@ -82,7 +84,7 @@ public class UserServiceImp implements UserService{
     public List<UserDTORegister> getAll() {
         return userRepository.getAll().
                 stream().
-                map(user -> UserMapper.entityToRegisterDTO(user)).
+                map(user -> userMapper.entityToRegisterDTO(user)).
                 collect(Collectors.toList());
     }
 
