@@ -1,17 +1,35 @@
 package com.challenge.disneyworld.models.mappers;
 
 import com.challenge.disneyworld.models.domain.Genre;
-import com.challenge.disneyworld.models.dto.GenreDTOBase;
-import com.challenge.disneyworld.models.dto.GenreDTODetail;
+import com.challenge.disneyworld.models.dto.GenreBaseDTO;
+import com.challenge.disneyworld.models.dto.GenreDetailDTO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;
 
+/**
+ * A class that provides methods to map between {@link Genre} and
+ * {@link GenreBaseDTO} or {@link GenreDetailDTO}
+ */
+@Component
 public class GenreMapper {
 
-    public static GenreDTOBase domainToDTOBase(Genre genre){
-        GenreDTOBase dto = null;
+    @Autowired
+    private ContentMapper contentMapper;
+
+    /**
+     * Returns a new {@link GenreBaseDTO} instance using the data contained
+     * in the {@link Genre} given.
+     *
+     * @param genre the genre instance to create a DTO from.
+     * @return a new DTO instance populated with values extracted from the genre
+     * instance given, or null if the genre is null.
+     */
+    public GenreBaseDTO entityToBaseDTO(Genre genre){
+        GenreBaseDTO dto = null;
         if (genre != null) {
-            dto = new GenreDTOBase();
+            dto = new GenreBaseDTO();
             dto.setId(genre.getId());
             dto.setName(genre.getName());
             dto.setImage(genre.getImage());
@@ -19,10 +37,18 @@ public class GenreMapper {
         return dto;
     }
 
-    public static GenreDTODetail domainToDTODetail(Genre genre){
-        GenreDTODetail dto = null;
+    /**
+     * Returns a new {@link GenreDetailDTO} instance using the data contained
+     * in the {@link Genre} given.
+     *
+     * @param genre the genre instance to create a DTO from.
+     * @return a new DTO instance populated with values extracted from the genre
+     * instance given, or null if the genre is null.
+     */
+    public GenreDetailDTO entityToDetailDTO(Genre genre){
+        GenreDetailDTO dto = null;
         if (genre != null){
-            dto = new GenreDTODetail();
+            dto = new GenreDetailDTO();
             dto.setName(genre.getName());
             dto.setImage(genre.getImage());
             dto.setId(genre.getId());
@@ -30,7 +56,7 @@ public class GenreMapper {
                     genre.
                     getContents().
                     stream().
-                            map(content -> ContentMapper.domainToDTOBase(content)).
+                            map(content -> contentMapper.entityToBaseDTO(content)).
                             collect(Collectors.toList())
             );
         }

@@ -1,8 +1,9 @@
 package com.challenge.disneyworld.service;
 
-import com.challenge.disneyworld.dao.GenreDAO;
-import com.challenge.disneyworld.models.dto.GenreDTOBase;
-import com.challenge.disneyworld.models.dto.GenreDTODetail;
+import com.challenge.disneyworld.models.mappers.ContentMapper;
+import com.challenge.disneyworld.repositories.GenreRepository;
+import com.challenge.disneyworld.models.dto.GenreBaseDTO;
+import com.challenge.disneyworld.models.dto.GenreDetailDTO;
 import com.challenge.disneyworld.models.mappers.GenreMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,23 +16,25 @@ import java.util.stream.Collectors;
 public class GenreServiceImp implements GenreService{
 
     @Autowired
-    private GenreDAO dao;
+    private GenreRepository genreRepository;
+    @Autowired
+    private GenreMapper genreMapper;
 
     @Override
     @Transactional(readOnly = true)
-    public List<GenreDTODetail> getAllDetail() {
-        return dao.getAll().
+    public List<GenreDetailDTO> getAllDetail() {
+        return genreRepository.getAll().
                 stream().
-                map(genre -> GenreMapper.domainToDTODetail(genre)).
+                map(genre -> genreMapper.entityToDetailDTO(genre)).
                 collect(Collectors.toList());
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<GenreDTOBase> getAllBase() {
-        return dao.getAll().
+    public List<GenreBaseDTO> getAllBase() {
+        return genreRepository.getAll().
                 stream().
-                map(genre -> GenreMapper.domainToDTOBase(genre)).
+                map(genre -> genreMapper.entityToBaseDTO(genre)).
                 collect(Collectors.toList());
     }
 

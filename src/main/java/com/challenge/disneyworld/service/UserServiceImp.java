@@ -1,9 +1,7 @@
 package com.challenge.disneyworld.service;
 
-import com.challenge.disneyworld.dao.UserDAO;
-import com.challenge.disneyworld.exceptions.DuplicateUniqueFieldException;
-import com.challenge.disneyworld.exceptions.InvalidRoleException;
-import com.challenge.disneyworld.exceptions.MandatoryFieldNotPassedException;
+import com.challenge.disneyworld.repositories.UserRepository;
+import com.challenge.disneyworld.exceptions.InvalidDTOException;
 import com.challenge.disneyworld.models.domain.User;
 import com.challenge.disneyworld.models.domain.UserRole;
 import com.challenge.disneyworld.models.dto.UserDTORegister;
@@ -20,39 +18,45 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Implementation of {@link UserService} using a {@link UserRepository}
+ * instance.
+ */
 @Component
 public class UserServiceImp implements UserService{
 
     @Autowired
-    private UserDAO userDAO;
+    private UserRepository userRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
     private AuthenticationManager authenticationManager;
+    @Autowired
+    private UserMapper userMapper;
 
     @Override
     @Transactional
     public String register(UserDTORegister dto) {
         if (dto.getName() == null)
-            throw new MandatoryFieldNotPassedException("No name passed. Name is mandatory.");
+            throw new InvalidDTOException("No name passed. Name is mandatory.");
 
         if (dto.getEmail() == null)
-            throw new MandatoryFieldNotPassedException("No email passed. Email is mandatory.");
+            throw new InvalidDTOException("No email passed. Email is mandatory.");
 
         if (dto.getPassword() == null)
-            throw new MandatoryFieldNotPassedException("No password passed. Password is mandatory.");
+            throw new InvalidDTOException("No password passed. Password is mandatory.");
 
         if (dto.getRole() == null)
-            throw new MandatoryFieldNotPassedException("No role passed. Role is mandatory.");
+            throw new InvalidDTOException("No role passed. Role is mandatory.");
 
-        if (userDAO.existsByName(dto.getName()))
-            throw new DuplicateUniqueFieldException("There is already a user with the same name (" + dto.getName() + "). No duplicates allowed");
+        if (userRepository.existsByName(dto.getName()))
+            throw new InvalidDTOException("There is already a user with the same name (" + dto.getName() + "). No duplicates allowed");
 
-        if (userDAO.existsByEmail(dto.getEmail()))
-            throw new DuplicateUniqueFieldException("There is already a user with the same email (" + dto.getEmail() + "). No duplicates allowed");
+        if (userRepository.existsByEmail(dto.getEmail()))
+            throw new InvalidDTOException("There is already a user with the same email (" + dto.getEmail() + "). No duplicates allowed");
 
         if ( !isValidRole(dto.getRole())){
-            throw new InvalidRoleException("Not a valid user role");
+            throw new InvalidDTOException("Not a valid user role");
         }
 
         User newUser = new User();
@@ -60,7 +64,7 @@ public class UserServiceImp implements UserService{
         newUser.setEmail(dto.getEmail());
         newUser.setPassword(passwordEncoder.encode(dto.getPassword()));
         newUser.setRole(dto.getRole());
-        userDAO.save(newUser);
+        userRepository.save(newUser);
         return "User successfully registered";
     }
 
@@ -78,9 +82,9 @@ public class UserServiceImp implements UserService{
     @Override
     @Transactional(readOnly = true)
     public List<UserDTORegister> getAll() {
-        return userDAO.getAll().
+        return userRepository.getAll().
                 stream().
-                map(user -> UserMapper.domainToDTO(user)).
+                map(user -> userMapper.entityToRegisterDTO(user)).
                 collect(Collectors.toList());
     }
 

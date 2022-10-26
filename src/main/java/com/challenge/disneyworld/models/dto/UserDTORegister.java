@@ -2,8 +2,15 @@ package com.challenge.disneyworld.models.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.io.Serializable;
+
+/**
+ * A register Data Transfer Object (DTO) of a
+ * {@link com.challenge.disneyworld.models.domain.User}.
+ */
 @Schema(name = "User-register")
-public class UserDTORegister {
+public class UserDTORegister implements Serializable {
+
     private String name;
     private String email;
     private String password;

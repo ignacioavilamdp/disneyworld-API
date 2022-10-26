@@ -1,8 +1,8 @@
 package com.challenge.disneyworld.controllers;
 
-import com.challenge.disneyworld.models.dto.ContentDTOBase;
-import com.challenge.disneyworld.models.dto.ContentDTODetail;
-import com.challenge.disneyworld.models.dto.StarDTOBase;
+import com.challenge.disneyworld.models.dto.ContentBaseDTO;
+import com.challenge.disneyworld.models.dto.ContentDetailDTO;
+import com.challenge.disneyworld.models.dto.StarBaseDTO;
 import com.challenge.disneyworld.service.ContentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -29,7 +29,7 @@ public class ContentController {
                              "If order criteria is not present, the movies will be presented in ascending order.\n" +
                              "If order criteria is present, then it must be 'ASC' or 'DESC' (case sensitive).")
     @GetMapping
-    public ResponseEntity<List<ContentDTOBase>> search(
+    public ResponseEntity<List<ContentBaseDTO>> search(
             @RequestParam(name = "title", required = false) String title,
             @RequestParam(name = "genreId", required = false) Integer genreId,
             @RequestParam(name = "orderCriteria", required = false) String order){
@@ -46,21 +46,21 @@ public class ContentController {
                              "The user must be ADMIN")
     @PostMapping
     @Secured("ROLE_ADMIN")
-    public ResponseEntity<ContentDTODetail> save(@RequestBody ContentDTODetail dto) {
-        ContentDTODetail savedDTO = service.save(dto);
+    public ResponseEntity<ContentDetailDTO> save(@RequestBody ContentDetailDTO dto) {
+        ContentDetailDTO savedDTO = service.save(dto);
         URI uri = URI.create("movies/"+ savedDTO.getId());
         return ResponseEntity.created(uri).body(savedDTO);
     }
 
     @Operation(summary = "Obtain a detailed list of all movies")
     @GetMapping("/detail")
-    public ResponseEntity<List<ContentDTODetail>> getAll() {
+    public ResponseEntity<List<ContentDetailDTO>> getAll() {
         return ResponseEntity.ok().body(service.getAll());
     }
 
     @Operation(summary = "Find a movie")
     @GetMapping("/{movieId}")
-    public ResponseEntity<ContentDTODetail> getById(@PathVariable("movieId") Long id){
+    public ResponseEntity<ContentDetailDTO> getById(@PathVariable("movieId") Long id){
         return ResponseEntity.ok().body(service.getById(id));
     }
 
@@ -83,16 +83,16 @@ public class ContentController {
                              "The user must be ADMIN")
     @PutMapping("/{movieId}")
     @Secured("ROLE_ADMIN")
-    public ResponseEntity<ContentDTODetail> updateById(@PathVariable("movieId") Long id,
-                                                   @RequestBody ContentDTODetail dto){
-        ContentDTODetail updatedDTO = service.updateById(id, dto);
+    public ResponseEntity<ContentDetailDTO> updateById(@PathVariable("movieId") Long id,
+                                                       @RequestBody ContentDetailDTO dto){
+        ContentDetailDTO updatedDTO = service.updateById(id, dto);
         URI uri = URI.create("movies/"+ updatedDTO.getId());
         return ResponseEntity.accepted().location(uri).body(updatedDTO);
     }
 
     @Operation(summary = "Find all characters that participated in a movie")
     @GetMapping("/{movieId}/characters")
-    public ResponseEntity<List<StarDTOBase>> getStars(@PathVariable("movieId") Long id){
+    public ResponseEntity<List<StarBaseDTO>> getStars(@PathVariable("movieId") Long id){
         return ResponseEntity.ok().body(service.getStarsById(id));
     }
 

@@ -22,14 +22,10 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(
-                    {MandatoryFieldNotPassedException.class,
-                    TryingToModifyIdException.class,
-                    DuplicateUniqueFieldException.class,
+                    {InvalidDTOException.class,
                     DuplicateRelationException.class,
-                    DuplicateUserException.class,
-                    InvalidRatingException.class,
-                    InvalidRoleException.class,
-                    InvalidOrderCriteriaException.class})
+                    InvalidOrderCriteriaException.class,
+                    InvalidIdException.class})
     @ResponseBody
     public ResponseEntity<ErrorMessage> badRequestExceptionHandler(HttpServletRequest req, RuntimeException ex){
         return new ResponseEntity<>(

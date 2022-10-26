@@ -1,6 +1,5 @@
-package com.challenge.disneyworld.dao;
+package com.challenge.disneyworld.repositories;
 
-import com.challenge.disneyworld.models.domain.Content;
 import com.challenge.disneyworld.models.domain.Star;
 import org.springframework.stereotype.Component;
 
@@ -9,8 +8,11 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.util.List;
 
+/**
+ * Implementation of {@link StarRepository} using JPA.
+ */
 @Component
-public class StarDAOImp implements StarDAO{
+public class StarRepositoryImp implements StarRepository {
 
     @PersistenceContext
     private EntityManager em;
@@ -75,16 +77,6 @@ public class StarDAOImp implements StarDAO{
     @Override
     public void delete(Star star) {
         em.remove(star);
-    }
-
-    @Override
-    public List<Content> getContentsById(Long id) {
-        String string = "SELECT DISTINCT cnt FROM Content cnt " +
-                "LEFT OUTER JOIN cnt.stars star " +
-                "WHERE star.id = :id";
-        TypedQuery<Content> query = em.createQuery(string, Content.class);
-        query.setParameter("id", id);
-        return query.getResultList();
     }
 
 }

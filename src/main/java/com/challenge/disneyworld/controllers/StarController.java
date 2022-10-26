@@ -1,8 +1,8 @@
 package com.challenge.disneyworld.controllers;
 
-import com.challenge.disneyworld.models.dto.ContentDTOBase;
-import com.challenge.disneyworld.models.dto.StarDTOBase;
-import com.challenge.disneyworld.models.dto.StarDTODetail;
+import com.challenge.disneyworld.models.dto.ContentBaseDTO;
+import com.challenge.disneyworld.models.dto.StarBaseDTO;
+import com.challenge.disneyworld.models.dto.StarDetailDTO;
 import com.challenge.disneyworld.service.StarService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -26,7 +26,7 @@ public class StarController {
 
     @Operation(summary = "Search a character")
     @GetMapping
-    public ResponseEntity<List<StarDTOBase>> search(
+    public ResponseEntity<List<StarBaseDTO>> search(
             @RequestParam(name = "name", required = false)  String name,
             @RequestParam(name = "age", required = false)   Short  age,
             @RequestParam(name = "weight", required = false) Float weight,
@@ -42,21 +42,21 @@ public class StarController {
                              "The user must be ADMIN")
     @PostMapping
     @Secured("ROLE_ADMIN")
-    public ResponseEntity<StarDTODetail> save(@RequestBody StarDTODetail dto) {
-        StarDTODetail savedDTO = service.save(dto);
+    public ResponseEntity<StarDetailDTO> save(@RequestBody StarDetailDTO dto) {
+        StarDetailDTO savedDTO = service.save(dto);
         URI uri = URI.create("characters/"+ savedDTO.getId());
         return ResponseEntity.created(uri).body(savedDTO);
     }
 
     @Operation(summary = "Obtain a detailed list of all characters")
     @GetMapping("/detail")
-    public ResponseEntity<List<StarDTODetail>> getAll() {
+    public ResponseEntity<List<StarDetailDTO>> getAll() {
         return ResponseEntity.ok().body(service.getAll());
     }
 
     @Operation(summary = "Find a character")
     @GetMapping("/{characterId}")
-    public ResponseEntity<StarDTODetail> getById(@PathVariable("characterId") Long id){
+    public ResponseEntity<StarDetailDTO> getById(@PathVariable("characterId") Long id){
         return ResponseEntity.ok().body(service.getById(id));
     }
 
@@ -77,16 +77,16 @@ public class StarController {
                              "The user must be ADMIN")
     @PutMapping("/{characterId}")
     @Secured("ROLE_ADMIN")
-    public ResponseEntity<StarDTODetail> updateById(@PathVariable("characterId") Long id,
-                                                @RequestBody StarDTODetail dto){
-        StarDTODetail updatedDTO = service.updateById(id, dto);
+    public ResponseEntity<StarDetailDTO> updateById(@PathVariable("characterId") Long id,
+                                                    @RequestBody StarDetailDTO dto){
+        StarDetailDTO updatedDTO = service.updateById(id, dto);
         URI uri = URI.create("characters/"+ updatedDTO.getId());
         return ResponseEntity.accepted().location(uri).body(updatedDTO);
     }
 
     @Operation(summary = "Find movies of a character")
     @GetMapping("/{characterId}/movies")
-    public ResponseEntity<List<ContentDTOBase>> getContents(@PathVariable("characterId") Long id){
+    public ResponseEntity<List<ContentBaseDTO>> getContents(@PathVariable("characterId") Long id){
         return ResponseEntity.ok().body(service.getContentsById(id));
     }
 

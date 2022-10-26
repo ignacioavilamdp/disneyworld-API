@@ -4,22 +4,13 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Domain class to represent a Star (movie or show character).
+ * Also serves as an entity for database persistence purposes using an ORM provider.
+ */
 @Entity
 @Table(name = "STAR")
 public class Star {
-    /*
-        CREATE TABLE STAR
-        (
-           ID          BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY,
-           NAME        VARCHAR(45) NOT NULL UNIQUE,
-           AGE         SMALLINT,
-           WEIGTH      FLOAT,
-           IMAGE       VARCHAR(45) DEFAULT 'character image',
-           HISTORY     VARCHAR(45),
-           CONSTRAINT  PK_STAR PRIMARY KEY(ID)
-        );
-     */
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")

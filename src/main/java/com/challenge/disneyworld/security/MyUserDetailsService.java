@@ -1,6 +1,6 @@
 package com.challenge.disneyworld.security;
 
-import com.challenge.disneyworld.dao.UserDAO;
+import com.challenge.disneyworld.repositories.UserRepository;
 import com.challenge.disneyworld.models.domain.User;
 import com.challenge.disneyworld.models.domain.UserAuthority;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +13,11 @@ import org.springframework.stereotype.Component;
 public class MyUserDetailsService implements UserDetailsService {
 
     @Autowired
-    private UserDAO userDAO;
+    private UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userDAO.getByName(username);
+        User user = userRepository.getByName(username);
         if (user == null)
             throw new UsernameNotFoundException("User '" + username + "' not found");
 

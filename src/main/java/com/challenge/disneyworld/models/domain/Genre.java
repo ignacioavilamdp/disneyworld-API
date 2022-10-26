@@ -4,18 +4,13 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Domain class to represent a Genre (movie or show genre).
+ * Also serves as an entity for database persistence purposes using an ORM provider.
+ */
 @Entity
 @Table(name = "GENRE")
 public class Genre {
-    /*
-        CREATE TABLE GENRE
-        (
-           ID          INT NOT NULL GENERATED ALWAYS AS IDENTITY,
-           NAME        VARCHAR(45) NOT NULL UNIQUE,
-           IMAGE       VARCHAR(45),
-           CONSTRAINT  PK_GENRE PRIMARY KEY(ID)
-        );
-     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")

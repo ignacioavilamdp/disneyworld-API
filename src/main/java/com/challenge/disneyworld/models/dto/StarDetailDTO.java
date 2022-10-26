@@ -4,8 +4,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;
 
+/**
+ * A detailed Data Transfer Object (DTO) of a
+ * {@link com.challenge.disneyworld.models.domain.Star}
+ */
 @Schema(name = "Character-detail")
-public class StarDTODetail extends StarDTOBase{
+public class StarDetailDTO extends StarBaseDTO {
 
     private short age;
     private float weight;

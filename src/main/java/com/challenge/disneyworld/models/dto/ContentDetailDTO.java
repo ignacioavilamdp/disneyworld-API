@@ -4,8 +4,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;
 
+/**
+ * A detailed Data Transfer Object (DTO) of a
+ * {@link com.challenge.disneyworld.models.domain.Content}
+ */
 @Schema(name = "Movie-detail")
-public class ContentDTODetail extends ContentDTOBase{
+public class ContentDetailDTO extends ContentBaseDTO {
 
     private String rating;
     private String genre;

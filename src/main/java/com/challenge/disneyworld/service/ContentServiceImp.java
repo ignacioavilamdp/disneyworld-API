@@ -1,16 +1,16 @@
 package com.challenge.disneyworld.service;
 
-import com.challenge.disneyworld.dao.ContentDAO;
-import com.challenge.disneyworld.dao.GenreDAO;
-import com.challenge.disneyworld.dao.StarDAO;
-import com.challenge.disneyworld.exceptions.*;
+import com.challenge.disneyworld.models.dto.ContentDetailDTO;
+import com.challenge.disneyworld.models.dto.StarBaseDTO;
+import com.challenge.disneyworld.repositories.ContentRepository;
+import com.challenge.disneyworld.repositories.GenreRepository;
+import com.challenge.disneyworld.repositories.StarRepository;
+import com.challenge.disneyworld.exceptions.InvalidIdException;
+import com.challenge.disneyworld.exceptions.InvalidOrderCriteriaException;
+import com.challenge.disneyworld.exceptions.NonExistentEntityException;
 import com.challenge.disneyworld.models.domain.Content;
-import com.challenge.disneyworld.models.domain.Genre;
 import com.challenge.disneyworld.models.domain.Rating;
-import com.challenge.disneyworld.models.domain.Star;
-import com.challenge.disneyworld.models.dto.ContentDTOBase;
-import com.challenge.disneyworld.models.dto.ContentDTODetail;
-import com.challenge.disneyworld.models.dto.StarDTOBase;
+import com.challenge.disneyworld.models.dto.ContentBaseDTO;
 import com.challenge.disneyworld.models.mappers.ContentMapper;
 import com.challenge.disneyworld.models.mappers.StarMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,108 +20,97 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Implementation of {@link ContentService} using {@link ContentRepository},
+ * {@link StarRepository} and {@link GenreRepository} instances.
+ */
 @Component
 public class ContentServiceImp implements ContentService{
 
     @Autowired
-    private ContentDAO contentDAO;
+    private ContentRepository contentRepository;
     @Autowired
-    private StarDAO starDAO;
+    private StarRepository starRepository;
     @Autowired
-    private GenreDAO genreDAO;
+    private GenreRepository genreRepository;
     @Autowired
     private StarService starService;
+    @Autowired
+    private ContentMapper contentMapper;
+    @Autowired
+    private StarMapper starMapper;
 
     @Override
     @Transactional(readOnly = true)
-    public List<ContentDTOBase> search(String title, Integer genreId, String order){
+    public List<ContentBaseDTO> search(String title, Integer genreId, String order) {
         if (order != null && !order.equals("ASC") && !order.equals("DESC")){
             throw new InvalidOrderCriteriaException("Invalid order criteria.");
         }
-        return contentDAO.search(title, genreId, order).
+        return contentRepository.search(title, genreId, order).
                 stream().
-                map(content -> ContentMapper.domainToDTOBase(content)).
+                map(content -> contentMapper.entityToBaseDTO(content)).
                 collect(Collectors.toList());
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<ContentDTODetail> getAll() {
-        return contentDAO.getAll().
+    public List<ContentDetailDTO> getAll() {
+        return contentRepository.getAll().
                 stream().
-                map(content -> ContentMapper.domainToDTODetail(content)).
+                map(content -> contentMapper.entityToDetailDTO(content)).
                 collect(Collectors.toList());
     }
 
     @Override
     @Transactional(readOnly = true)
-    public ContentDTODetail getById(Long id){
-        Content content = contentDAO.getById(id);
+    public ContentDetailDTO getById(Long id){
+        if (id == null){
+            throw new InvalidIdException("No id passed");
+        }
+
+        Content content = contentRepository.getById(id);
         if (content == null)
             throw new NonExistentEntityException("There is no movie with ID: " + id);
 
-        return ContentMapper.domainToDTODetail(contentDAO.getById(id));
+        return contentMapper.entityToDetailDTO(contentRepository.getById(id));
     }
 
     @Override
     @Transactional
     public String deleteById(Long id) {
-        Content content = contentDAO.getById(id);
-        if ( content == null )
+        if (id == null){
+            throw new InvalidIdException("No id passed");
+        }
+
+        Content content = contentRepository.getById(id);
+        if (content == null)
             throw new NonExistentEntityException("There is no movie with ID: " + id);
 
-        contentDAO.delete(content);
+        contentRepository.delete(content);
         return "Movie with ID: " + id + " - successfully removed";
     }
 
     @Override
     @Transactional
-    public ContentDTODetail updateById(Long id, ContentDTODetail dto){
-        if (id != dto.getId())
-            throw new TryingToModifyIdException("The id in the payload does not match the id in the URI. " +
-                    "Are you trying to modify the id? This is not allowed.");
+    public ContentDetailDTO updateById(Long id, ContentDetailDTO dto){
+        if (id == null){
+            throw new InvalidIdException("No id passed");
+        }
 
-        if (dto.getTitle() == null)
-            throw new MandatoryFieldNotPassedException("No title passed. Title is mandatory.");
-
-        if (dto.getRating() == null)
-            throw new MandatoryFieldNotPassedException("No rating passed. Rating is mandatory.");
-
-        Content contentById = contentDAO.getById(dto.getId());
+        Content contentById = contentRepository.getById(id);
         if (contentById == null)
             throw new NonExistentEntityException("There is no movie with ID: " + id);
 
-        Content contentByTitle = contentDAO.getByTitle(dto.getTitle());
-        if (contentByTitle != null && contentByTitle.getId() != contentById.getId())
-            throw new DuplicateUniqueFieldException("There is already a movie with the same title (" + dto.getTitle() + "). No duplicates allowed");
-
-        if ( !isValidRating(dto.getRating()) ){
-            throw new InvalidRatingException("Invalid rating");
-        }
-
-        modifyEntityFromDTO(contentById, dto);
-        return ContentMapper.domainToDTODetail(contentById);
+        return contentMapper.entityToDetailDTO(
+                contentMapper.updateEntityFromDTO(contentById, dto));
     }
 
     @Override
     @Transactional
-    public ContentDTODetail save(ContentDTODetail dto) {
-        if (dto.getTitle() == null)
-            throw new MandatoryFieldNotPassedException("No title passed. Title is mandatory.");
-
-        if (dto.getRating() == null)
-            throw new MandatoryFieldNotPassedException("No rating passed. Rating is mandatory.");
-
-        if (contentDAO.existsByTitle(dto.getTitle()))
-            throw new DuplicateUniqueFieldException("There is already a movie with the same title (" + dto.getTitle() + "). No duplicates allowed");
-
-        if ( !isValidRating(dto.getRating()) ){
-            throw new InvalidRatingException("Invalid rating");
-        }
-
-        Content content = new Content();
-        modifyEntityFromDTO(content, dto);
-        return ContentMapper.domainToDTODetail(contentDAO.save(content));
+    public ContentDetailDTO save(ContentDetailDTO dto) {
+        return contentMapper.entityToDetailDTO(
+                contentRepository.save(
+                        contentMapper.detailDTOToEntity(dto)));
     }
 
     @Override
@@ -138,52 +127,19 @@ public class ContentServiceImp implements ContentService{
 
     @Override
     @Transactional(readOnly = true)
-    public List<StarDTOBase> getStarsById(Long id) {
-        if (!contentDAO.existsById(id))
+    public List<StarBaseDTO> getStarsById(Long id) {
+        if (id == null){
+            throw new InvalidIdException("No id passed");
+        }
+
+        Content content = contentRepository.getById(id);
+        if (content == null)
             throw new NonExistentEntityException("There is no movie with ID: " + id);
 
-        return contentDAO.getStarsById(id).
+        return content.getStars().
                 stream().
-                map(star -> StarMapper.domainToDTOBase(star)).
+                map(star -> starMapper.entityToBaseDTO(star)).
                 collect(Collectors.toList());
-    }
-
-    private void modifyEntityFromDTO(Content content, ContentDTODetail dto){
-        content.setTitle(dto.getTitle());
-        content.setImage(dto.getImage());
-        content.setDate(dto.getDate());
-        content.setRating(dto.getRating());
-
-        /*
-         * First we need to check if the genre entity exists.
-         */
-        Genre genre = genreDAO.getByName(dto.getGenre());
-        if (genre == null)
-            throw new NonExistentEntityException("There is no genre named: " + dto.getGenre());
-        content.setGenre(genre);
-
-        /*
-         * We need to remove all the relations between the content and its stars
-         * As the star entity is the owning side of the relation, we need to
-         * remove the content entity from the star first.
-         */
-        for (Star star : content.getStars()){
-            star.getContents().remove(content);
-        }
-        content.getStars().clear();
-
-        /*
-         * For each name in the dto we need to check if the star entity exists.
-         * As the Star entity is the owning side of the relation, we need to
-         * add the content entity to the star first.
-         */
-        for (String starName : dto.getStars()){
-            Star star = starDAO.getByName(starName);
-            if (star == null)
-                throw new NonExistentEntityException("There is no character with name: " + starName + ". Please, add the character first.");
-            star.getContents().add(content);
-            content.getStars().add(star);
-        }
     }
 
     private boolean isValidRating(String rating){

@@ -1,7 +1,7 @@
 package com.challenge.disneyworld.controllers;
 
 import com.challenge.disneyworld.models.dto.UserDTORegister;
-import com.challenge.disneyworld.models.dto.UserDTOLogin;
+import com.challenge.disneyworld.models.dto.UserLoginDTO;
 import com.challenge.disneyworld.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -47,7 +47,7 @@ public class UserController {
 
     @Operation(summary = "Login a user")
     @PostMapping("/login")
-    public String login(@RequestBody UserDTOLogin dto){
+    public String login(@RequestBody UserLoginDTO dto){
         return service.login(dto.getName(), dto.getPassword());
     }
 
