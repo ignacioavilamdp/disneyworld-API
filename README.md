@@ -3,7 +3,7 @@
 ## Introduction
 This is a simple API developed in JAVA using SpringBoot to handle movies and characters from DisneyWorld.
 
-## Design choices
+## Design decisions
 ### Framework
 SpringBoot is used as the main framework.
 
