@@ -1,6 +1,5 @@
 package com.challenge.disneyworld.service;
 
-import com.challenge.disneyworld.models.mappers.ContentMapper;
 import com.challenge.disneyworld.repositories.GenreRepository;
 import com.challenge.disneyworld.models.dto.GenreBaseDTO;
 import com.challenge.disneyworld.models.dto.GenreDetailDTO;
