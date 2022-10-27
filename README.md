@@ -107,7 +107,7 @@ References:
 2. Yener - Professional Java EE Design Patterns
 3. Sun Microsystems - Core J2EE Patterns - 2nd ed
 
-### Exceptions as way to handle non-successful http responses
+### Exceptions as a way to handle non-successful http responses
 Traditional Java practice tell us that exceptions should be reserved for exceptional
 cases and should not be used for normal or expected situations.
 Bloch says: "Exceptions are, as their name implies, to
