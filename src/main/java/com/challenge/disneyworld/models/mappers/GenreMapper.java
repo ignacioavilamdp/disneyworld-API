@@ -15,8 +15,12 @@ import java.util.stream.Collectors;
 @Component
 public class GenreMapper {
 
+    private final ContentMapper contentMapper;
+
     @Autowired
-    private ContentMapper contentMapper;
+    public GenreMapper(ContentMapper contentMapper) {
+        this.contentMapper = contentMapper;
+    }
 
     /**
      * Returns a new {@link GenreBaseDTO} instance using the data contained

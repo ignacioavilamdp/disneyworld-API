@@ -20,10 +20,14 @@ import java.util.List;
 @Component
 public class StarMapper {
 
+    private final StarRepository starRepository;
+    private final ContentRepository contentRepository;
+
     @Autowired
-    private StarRepository starRepository;
-    @Autowired
-    private ContentRepository contentRepository;
+    public StarMapper(StarRepository starRepository, ContentRepository contentRepository) {
+        this.starRepository = starRepository;
+        this.contentRepository = contentRepository;
+    }
 
     /**
      * Returns a new {@link StarBaseDTO} instance using the data contained

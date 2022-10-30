@@ -24,14 +24,19 @@ import java.util.stream.Collectors;
 @Component
 public class StarServiceImp implements StarService{
 
+    private final StarRepository starRepository;
+    private final ContentRepository contentRepository;
+    private final ContentMapper contentMapper;
+    private final StarMapper starMapper;
+
     @Autowired
-    private ContentRepository contentRepository;
-    @Autowired
-    private StarRepository starRepository;
-    @Autowired
-    private ContentMapper contentMapper;
-    @Autowired
-    private StarMapper starMapper;
+    public StarServiceImp(StarRepository starRepository, ContentRepository contentRepository,
+                          ContentMapper contentMapper, StarMapper starMapper) {
+        this.starRepository = starRepository;
+        this.contentRepository = contentRepository;
+        this.contentMapper = contentMapper;
+        this.starMapper = starMapper;
+    }
 
     @Override
     @Transactional(readOnly = true)

@@ -25,14 +25,19 @@ import java.util.stream.Collectors;
 @Component
 public class UserServiceImp implements UserService{
 
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+
     @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private AuthenticationManager authenticationManager;
-    @Autowired
-    private UserMapper userMapper;
+    public UserServiceImp(UserRepository userRepository, UserMapper userMapper,
+                          PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager) {
+        this.userRepository = userRepository;
+        this.userMapper = userMapper;
+        this.passwordEncoder = passwordEncoder;
+        this.authenticationManager = authenticationManager;
+    }
 
     @Override
     @Transactional
@@ -98,5 +103,4 @@ public class UserServiceImp implements UserService{
         }
         return isValid;
     }
-
 }

@@ -23,12 +23,17 @@ import java.util.List;
 @Component
 public class ContentMapper {
 
+    private final ContentRepository contentRepository;
+    private final StarRepository starRepository;
+    private final GenreRepository genreRepository;
+
     @Autowired
-    private ContentRepository contentRepository;
-    @Autowired
-    private StarRepository starRepository;
-    @Autowired
-    private GenreRepository genreRepository;
+    public ContentMapper(ContentRepository contentRepository,
+                         StarRepository starRepository, GenreRepository genreRepository) {
+        this.contentRepository = contentRepository;
+        this.starRepository = starRepository;
+        this.genreRepository = genreRepository;
+    }
 
     /**
      * Returns a new {@link ContentBaseDTO} instance using the data contained

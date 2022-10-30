@@ -18,8 +18,12 @@ import java.util.List;
 @Tag(name = "user", description = "user authentication")
 public class UserController {
 
+    private final UserService service;
+
     @Autowired
-    UserService service;
+    public UserController(UserService service) {
+        this.service = service;
+    }
 
     @Operation(summary = "Obtain a detailed list of all users",
                description = "Obtains a detailed list of all users, including its hashed passwords.\n" +

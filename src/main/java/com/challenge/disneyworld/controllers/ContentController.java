@@ -21,8 +21,12 @@ import java.util.List;
 @SecurityRequirement(name = "DisneyAPI")
 public class ContentController {
 
+    private final ContentService service;
+
     @Autowired
-    private ContentService service;
+    public ContentController(ContentService service) {
+        this.service = service;
+    }
 
     @Operation(summary = "Search a movie",
                description = "Movies will be ordered in a lexicographical fashion by title.\n" +

@@ -9,7 +9,6 @@ import com.challenge.disneyworld.exceptions.InvalidIdException;
 import com.challenge.disneyworld.exceptions.InvalidOrderCriteriaException;
 import com.challenge.disneyworld.exceptions.NonExistentEntityException;
 import com.challenge.disneyworld.models.domain.Content;
-import com.challenge.disneyworld.models.domain.Rating;
 import com.challenge.disneyworld.models.dto.ContentBaseDTO;
 import com.challenge.disneyworld.models.mappers.ContentMapper;
 import com.challenge.disneyworld.models.mappers.StarMapper;
@@ -27,18 +26,19 @@ import java.util.stream.Collectors;
 @Component
 public class ContentServiceImp implements ContentService{
 
+    private final ContentRepository contentRepository;
+    private final StarService starService;
+    private final ContentMapper contentMapper;
+    private final StarMapper starMapper;
+
     @Autowired
-    private ContentRepository contentRepository;
-    @Autowired
-    private StarRepository starRepository;
-    @Autowired
-    private GenreRepository genreRepository;
-    @Autowired
-    private StarService starService;
-    @Autowired
-    private ContentMapper contentMapper;
-    @Autowired
-    private StarMapper starMapper;
+    public ContentServiceImp(ContentRepository contentRepository, StarService starService,
+                             ContentMapper contentMapper, StarMapper starMapper) {
+        this.contentRepository = contentRepository;
+        this.starService = starService;
+        this.contentMapper = contentMapper;
+        this.starMapper = starMapper;
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -142,14 +142,4 @@ public class ContentServiceImp implements ContentService{
                 collect(Collectors.toList());
     }
 
-    private boolean isValidRating(String rating){
-        boolean isValid = false;
-        for ( Rating validRating : Rating.values() ){
-            if (rating.equals(validRating.getRate())) {
-                isValid = true;
-                break;
-            }
-        }
-        return isValid;
-    }
 }
