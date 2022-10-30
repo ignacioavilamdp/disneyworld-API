@@ -1,6 +1,6 @@
 package com.challenge.disneyworld.controllers;
 
-import com.challenge.disneyworld.models.dto.UserDTORegister;
+import com.challenge.disneyworld.models.dto.UserRegisterDTO;
 import com.challenge.disneyworld.models.dto.UserLoginDTO;
 import com.challenge.disneyworld.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,7 +31,7 @@ public class UserController {
     @GetMapping
     @Secured("ROLE_ADMIN")
     @SecurityRequirement(name = "DisneyAPI")
-    public ResponseEntity<List<UserDTORegister>> getAll(){
+    public ResponseEntity<List<UserRegisterDTO>> getAll(){
         return ResponseEntity.ok().body(service.getAll());
     }
 
@@ -45,7 +45,7 @@ public class UserController {
     @PostMapping("/register")
     @Secured("ROLE_ADMIN")
     @SecurityRequirement(name = "DisneyAPI")
-    public String registerUser(@RequestBody UserDTORegister dto){
+    public String registerUser(@RequestBody UserRegisterDTO dto){
         return service.register(dto);
     }
 

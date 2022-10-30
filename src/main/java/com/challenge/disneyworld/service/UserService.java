@@ -1,7 +1,7 @@
 package com.challenge.disneyworld.service;
 
 import com.challenge.disneyworld.exceptions.InvalidDTOException;
-import com.challenge.disneyworld.models.dto.UserDTORegister;
+import com.challenge.disneyworld.models.dto.UserRegisterDTO;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ public interface UserService{
      * @param dto the dto containing the new user data.
      * @return a message if the registration process was successful.
      */
-    String register(UserDTORegister dto);
+    String register(UserRegisterDTO dto);
 
     /**
      * Logins a user.
@@ -37,6 +37,6 @@ public interface UserService{
      *
      * @return a list of all registered users as DTO's.
      */
-    List<UserDTORegister> getAll();
+    List<UserRegisterDTO> getAll();
 
 }
