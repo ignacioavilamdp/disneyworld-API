@@ -1,12 +1,13 @@
 package com.challenge.disneyworld.models.mappers;
 
+import com.challenge.disneyworld.models.domain.Content;
 import com.challenge.disneyworld.models.domain.Genre;
 import com.challenge.disneyworld.models.dto.GenreBaseDTO;
 import com.challenge.disneyworld.models.dto.GenreDetailDTO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A class that provides methods to map between {@link Genre} and
@@ -14,13 +15,6 @@ import java.util.stream.Collectors;
  */
 @Component
 public class GenreMapper {
-
-    private final ContentMapper contentMapper;
-
-    @Autowired
-    public GenreMapper(ContentMapper contentMapper) {
-        this.contentMapper = contentMapper;
-    }
 
     /**
      * Returns a new {@link GenreBaseDTO} instance using the data contained
@@ -56,13 +50,11 @@ public class GenreMapper {
             dto.setName(genre.getName());
             dto.setImage(genre.getImage());
             dto.setId(genre.getId());
-            dto.setContents(
-                    genre.
-                    getContents().
-                    stream().
-                            map(content -> contentMapper.entityToBaseDTO(content)).
-                            collect(Collectors.toList())
-            );
+            List<String> contentTitles = new ArrayList<>();
+            for (Content content : genre.getContents()){
+                contentTitles.add(content.getTitle());
+            }
+            dto.setContents(contentTitles);
         }
         return dto;
     }
