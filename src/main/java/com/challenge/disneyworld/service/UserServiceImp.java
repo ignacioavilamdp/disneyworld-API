@@ -8,6 +8,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,7 +41,7 @@ public class UserServiceImp implements UserService{
         userRepository.save(
                 userMapper.registerDTOToEntity(dto));
 
-        return "User successfully registered";
+        return "User successfully registered " ;
     }
 
     @Override
@@ -49,7 +51,8 @@ public class UserServiceImp implements UserService{
                 new UsernamePasswordAuthenticationToken(userName, password));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        return "User successfully logged in";
+        String storedName = SecurityContextHolder.getContext().getAuthentication().getName();
+        return "User successfully logged in " + storedName;
     }
 
     @Override
