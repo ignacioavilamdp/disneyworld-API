@@ -70,7 +70,7 @@ public class ContentMapper {
             dto.setId(content.getId());
             dto.setTitle(content.getTitle());
             dto.setDate(content.getDate());
-            dto.setRating(content.getRating());
+            dto.setRating(content.getRating().name());
             dto.setImage(content.getImage());
             dto.setGenre(content.getGenre().getName());
             List<String> starsNames = new ArrayList<>();
@@ -148,7 +148,7 @@ public class ContentMapper {
         content.setTitle(dto.getTitle());
         content.setImage(dto.getImage());
         content.setDate(dto.getDate());
-        content.setRating(dto.getRating());
+        content.setRating(Rating.valueOf(dto.getRating()));
 
         /*
          * First we need to check if the genre entity exists.
@@ -187,7 +187,7 @@ public class ContentMapper {
     private boolean isValidRating(String rating){
         boolean isValid = false;
         for ( Rating validRating : Rating.values() ){
-            if (rating.equals(validRating.getRate())) {
+            if (rating.equals(validRating.name())) {
                 isValid = true;
                 break;
             }
