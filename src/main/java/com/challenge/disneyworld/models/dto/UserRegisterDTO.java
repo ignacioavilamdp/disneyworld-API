@@ -9,7 +9,7 @@ import java.io.Serializable;
  * {@link com.challenge.disneyworld.models.domain.User}.
  */
 @Schema(name = "User-register")
-public class UserDTORegister implements Serializable {
+public class UserRegisterDTO implements Serializable {
 
     private String name;
     private String email;

@@ -14,10 +14,14 @@ import java.util.stream.Collectors;
 @Component
 public class GenreServiceImp implements GenreService{
 
+    private final GenreRepository genreRepository;
+    private final GenreMapper genreMapper;
+
     @Autowired
-    private GenreRepository genreRepository;
-    @Autowired
-    private GenreMapper genreMapper;
+    public GenreServiceImp(GenreRepository genreRepository, GenreMapper genreMapper) {
+        this.genreRepository = genreRepository;
+        this.genreMapper = genreMapper;
+    }
 
     @Override
     @Transactional(readOnly = true)

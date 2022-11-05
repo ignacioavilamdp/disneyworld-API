@@ -21,8 +21,12 @@ import java.util.List;
 @SecurityRequirement(name = "DisneyAPI")
 public class StarController {
 
+    private final StarService service;
+
     @Autowired
-    private StarService service;
+    public StarController(StarService service) {
+        this.service = service;
+    }
 
     @Operation(summary = "Search a character")
     @GetMapping

@@ -21,7 +21,8 @@ public class Content {
     @Column(name = "CDATE")
     private LocalDate date;
     @Column(name = "RATING")
-    private String rating;
+    @Enumerated(EnumType.STRING)
+    private Rating rating;
     @Column(name = "IMAGE")
     private String image;
     @ManyToOne
@@ -48,10 +49,10 @@ public class Content {
     public void setDate(LocalDate date) {
         this.date = date;
     }
-    public String getRating() {
+    public Rating getRating() {
         return rating;
     }
-    public void setRating(String rating) {
+    public void setRating(Rating rating) {
         this.rating = rating;
     }
     public String getImage() {

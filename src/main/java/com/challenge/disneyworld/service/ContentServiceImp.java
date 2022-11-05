@@ -1,5 +1,9 @@
 package com.challenge.disneyworld.service;
 
+import com.challenge.disneyworld.exceptions.InvalidDTOException;
+import com.challenge.disneyworld.models.domain.Genre;
+import com.challenge.disneyworld.models.domain.Rating;
+import com.challenge.disneyworld.models.domain.Star;
 import com.challenge.disneyworld.models.dto.ContentDetailDTO;
 import com.challenge.disneyworld.models.dto.StarBaseDTO;
 import com.challenge.disneyworld.repositories.ContentRepository;
@@ -9,7 +13,6 @@ import com.challenge.disneyworld.exceptions.InvalidIdException;
 import com.challenge.disneyworld.exceptions.InvalidOrderCriteriaException;
 import com.challenge.disneyworld.exceptions.NonExistentEntityException;
 import com.challenge.disneyworld.models.domain.Content;
-import com.challenge.disneyworld.models.domain.Rating;
 import com.challenge.disneyworld.models.dto.ContentBaseDTO;
 import com.challenge.disneyworld.models.mappers.ContentMapper;
 import com.challenge.disneyworld.models.mappers.StarMapper;
@@ -27,18 +30,24 @@ import java.util.stream.Collectors;
 @Component
 public class ContentServiceImp implements ContentService{
 
+    private final ContentRepository contentRepository;
+    private final GenreRepository genreRepository;
+    private final StarRepository starRepository;
+    private final StarService starService;
+    private final ContentMapper contentMapper;
+    private final StarMapper starMapper;
+
     @Autowired
-    private ContentRepository contentRepository;
-    @Autowired
-    private StarRepository starRepository;
-    @Autowired
-    private GenreRepository genreRepository;
-    @Autowired
-    private StarService starService;
-    @Autowired
-    private ContentMapper contentMapper;
-    @Autowired
-    private StarMapper starMapper;
+    public ContentServiceImp(ContentRepository contentRepository, GenreRepository genreRepository,
+                             StarRepository starRepository, StarService starService,
+                             ContentMapper contentMapper, StarMapper starMapper) {
+        this.contentRepository = contentRepository;
+        this.genreRepository = genreRepository;
+        this.starRepository = starRepository;
+        this.starService = starService;
+        this.contentMapper = contentMapper;
+        this.starMapper = starMapper;
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -93,24 +102,52 @@ public class ContentServiceImp implements ContentService{
     @Override
     @Transactional
     public ContentDetailDTO updateById(Long id, ContentDetailDTO dto){
-        if (id == null){
+        if (id == null)
             throw new InvalidIdException("No id passed");
-        }
 
         Content contentById = contentRepository.getById(id);
         if (contentById == null)
             throw new NonExistentEntityException("There is no movie with ID: " + id);
 
+        if (contentById.getId() != dto.getId())
+            throw new InvalidDTOException("The id in the payload does not match the id in the URI. " +
+                    "Are you trying to modify the id? This is not allowed.");
+
+        if (dto.getTitle() == null)
+            throw new InvalidDTOException("No title passed. Title is mandatory.");
+
+        if (dto.getRating() == null)
+            throw new InvalidDTOException("No rating passed. Rating is mandatory.");
+
+        if ( !isValidRating(dto.getRating()) )
+            throw new InvalidDTOException("Invalid rating");
+
+        Content contentByDTOTitle = contentRepository.getByTitle(dto.getTitle());
+        if (contentByDTOTitle != null && contentByDTOTitle.getId() != contentById.getId())
+            throw new InvalidDTOException("There is already a movie with the same title (" + dto.getTitle() + "). No duplicates allowed");
+
         return contentMapper.entityToDetailDTO(
-                contentMapper.updateEntityFromDTO(contentById, dto));
+                copyDataFromDTO(contentById, dto));
     }
 
     @Override
     @Transactional
     public ContentDetailDTO save(ContentDetailDTO dto) {
+        if (dto.getTitle() == null)
+            throw new InvalidDTOException("No title passed. Title is mandatory.");
+
+        if (dto.getRating() == null)
+            throw new InvalidDTOException("No rating passed. Rating is mandatory.");
+
+        if ( !isValidRating(dto.getRating()) )
+            throw new InvalidDTOException("Invalid rating");
+
+        if (contentRepository.existsByTitle(dto.getTitle()))
+            throw new InvalidDTOException("There is already a movie with the same title (" + dto.getTitle() + "). No duplicates allowed");
+
         return contentMapper.entityToDetailDTO(
                 contentRepository.save(
-                        contentMapper.detailDTOToEntity(dto)));
+                        copyDataFromDTO(new Content(), dto)));
     }
 
     @Override
@@ -142,10 +179,50 @@ public class ContentServiceImp implements ContentService{
                 collect(Collectors.toList());
     }
 
+    private Content copyDataFromDTO(Content content, ContentDetailDTO dto){
+        content.setTitle(dto.getTitle());
+        content.setImage(dto.getImage());
+        content.setDate(dto.getDate());
+        content.setRating(Rating.valueOf(dto.getRating()));
+
+        /*
+         * First we need to check if the genre entity exists.
+         */
+        Genre genre = genreRepository.getByName(dto.getGenre());
+        if (genre == null)
+            throw new InvalidDTOException("There is no genre named: " + dto.getGenre());
+        content.setGenre(genre);
+
+        /*
+         * We need to remove all the relations between the content and its stars
+         * As the star entity is the owning side of the relation, we need to
+         * remove the content entity from the star first.
+         */
+        for (Star star : content.getStars()){
+            star.getContents().remove(content);
+        }
+        content.getStars().clear();
+
+        /*
+         * For each name in the dto we need to check if the star entity exists.
+         * As the Star entity is the owning side of the relation, we need to
+         * add the content entity to the star first.
+         */
+        for (String starName : dto.getStars()){
+            Star star = starRepository.getByName(starName);
+            if (star == null)
+                throw new InvalidDTOException("There is no character with name: " + starName + ". Please, add the character first.");
+            star.getContents().add(content);
+            content.getStars().add(star);
+        }
+
+        return content;
+    }
+
     private boolean isValidRating(String rating){
         boolean isValid = false;
         for ( Rating validRating : Rating.values() ){
-            if (rating.equals(validRating.getRate())) {
+            if (rating.equals(validRating.name())) {
                 isValid = true;
                 break;
             }

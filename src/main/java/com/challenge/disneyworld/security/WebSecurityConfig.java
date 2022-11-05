@@ -22,8 +22,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
         jsr250Enabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
+
     private MyUserDetailsService userDetailsService;
+
+    @Autowired
+    public WebSecurityConfig(MyUserDetailsService userDetailsService){
+        this.userDetailsService = userDetailsService;
+    }
 
     private static final String[] SWAGGER_AUTH = {
             "/swagger-ui.html",
@@ -65,10 +70,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // http.exceptionHandling().accessDeniedPage("/login");
     }
 
+    /*
     @Bean
     public UserDetailsService userDetailsService() {
         return new MyUserDetailsService();
     }
+
+     */
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -85,5 +93,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
-
 }

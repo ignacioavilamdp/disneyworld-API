@@ -20,8 +20,12 @@ import java.util.List;
 @SecurityRequirement(name = "DisneyAPI")
 public class GenreController {
 
+    private final GenreService service;
+
     @Autowired
-    private GenreService service;
+    public GenreController(GenreService service) {
+        this.service = service;
+    }
 
     @Operation(summary = "Obtain a list available of genres")
     @GetMapping()
