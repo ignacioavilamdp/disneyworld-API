@@ -1,5 +1,6 @@
 package com.challenge.disneyworld.service;
 
+import com.challenge.disneyworld.models.domain.UserRole;
 import com.challenge.disneyworld.repositories.UserRepository;
 import com.challenge.disneyworld.models.dto.UserRegisterDTO;
 import com.challenge.disneyworld.models.mappers.UserMapper;
@@ -7,12 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,7 +55,22 @@ public class UserServiceImp implements UserService{
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String storedName = SecurityContextHolder.getContext().getAuthentication().getName();
-        return "User successfully logged in " + storedName;
+
+        Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+
+        StringBuilder sb = new StringBuilder();
+        boolean isUser = false;
+        boolean isAdmin = false;
+        for (GrantedAuthority grantedAuthority : authorities){
+            if (grantedAuthority.getAuthority().equals(UserRole.ROLE_USER.getAuthority())){
+                isUser = true;
+            }
+            if (grantedAuthority.getAuthority().equals((UserRole.ROLE_ADMIN.getAuthority()))){
+                isAdmin = true;
+            }
+        }
+
+        return "User successfully logged in " + storedName + " isUser: " + isUser + " isAdmin: " + isAdmin;
     }
 
     @Override
