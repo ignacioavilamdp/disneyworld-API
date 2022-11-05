@@ -84,24 +84,40 @@ public class StarServiceImp implements StarService{
     @Override
     @Transactional
     public StarDetailDTO updateById(Long id, StarDetailDTO dto){
-        if (id == null){
+        if (id == null)
             throw new InvalidIdException("No id passed");
-        }
 
         Star starById = starRepository.getById(id);
         if (starById == null)
             throw new NonExistentEntityException("There is no character with ID: " + id);
 
+        if (starById.getId() != dto.getId())
+            throw new InvalidDTOException("The id in the payload does not match the id in the URI. " +
+                    "Are you trying to modify the id? This is not allowed.");
+
+        if (dto.getName() == null)
+            throw new InvalidDTOException("No name passed. Name is mandatory.");
+
+        Star starByDTOName = starRepository.getByName(dto.getName());
+        if (starByDTOName != null && starByDTOName.getId() != starById.getId())
+            throw new InvalidDTOException("There is already a character with the same name (" + dto.getName() + "). No duplicates allowed.");
+
         return starMapper.entityToDetailDTO(
-                starMapper.updateEntityFromDTO(starById, dto));
+                copyDataFromDTO(starById, dto));
     }
 
     @Override
     @Transactional
     public StarDetailDTO save(StarDetailDTO dto) {
+        if (dto.getName() == null)
+            throw new InvalidDTOException("No name passed. Name is mandatory.");
+
+        if (starRepository.existsByName(dto.getName()))
+            throw new InvalidDTOException("There is already a character with the same name (" + dto.getName() + "). No duplicates allowed");
+
         return starMapper.entityToDetailDTO(
                 starRepository.save(
-                        starMapper.detailDTOToEntity(dto)));
+                        copyDataFromDTO(new Star(), dto)));
     }
 
     @Override
@@ -173,5 +189,24 @@ public class StarServiceImp implements StarService{
                 collect(Collectors.toList());
     }
 
+    private Star copyDataFromDTO(Star star, StarDetailDTO dto){
+        star.setName(dto.getName());
+        star.setImage(dto.getImage());
+        star.setAge(dto.getAge());
+        star.setHistory(dto.getHistory());
+        star.setWeight(dto.getWeight());
 
+        /*
+         * We need to remove all the relations between the content and its stars.
+         * For each name in the dto we need to check if the content entity exists.
+         */
+        star.getContents().clear();
+        for (String contentTitle : dto.getContents()){
+            Content content = contentRepository.getByTitle(contentTitle);
+            if (content == null)
+                throw new InvalidDTOException("There is no movie with title: " + contentTitle + ". Please, add the movie first.");
+            star.getContents().add(content);
+        }
+        return star;
+    }
 }

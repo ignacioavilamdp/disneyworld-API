@@ -62,22 +62,22 @@ INSERT INTO CONTENT
 VALUES 	
 		('Orphan''s Benefit',
 		DATE '1934-08-11',
-        '2',
+        'R2',
         11),
 		
 	 	('Fantasia',
 		DATE '1940-11-13',
-        '5',
+        'R5',
         6),
 
 		('Three little birds',
 		DATE '2022-5-15',
-        '5',
+        'R5',
         11),
 
 	 	('Queen',
 		DATE '1955-02-06',
-        '2',
+        'R2',
         6);
 		
 --STAR_CONTENT
