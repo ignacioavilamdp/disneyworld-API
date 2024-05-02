@@ -236,4 +236,4 @@ Some requirements not implemented yet:
 
     3. Authentication using a token, for instance jwt. So far authentication is performed with http basic method. 
 
-    4. Unit testing with JUnit
+    4. Unit testing with JUnit.
